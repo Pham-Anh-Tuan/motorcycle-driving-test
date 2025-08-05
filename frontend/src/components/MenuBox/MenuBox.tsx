@@ -5,11 +5,11 @@ const MenuBox = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
                     {/* Card 1 */}
-                    <div className="bg-gray-50 p-6 rounded shadow text-center hover:shadow-md transition cursor-pointer border border-gray-200">
+                    <a href="/de-ngau-nhien" className="bg-gray-50 p-6 rounded shadow text-center hover:shadow-md transition cursor-pointer border border-gray-200">
                         <div className="text-6xl mb-4">🔀</div>
                         <h3 className="text-lg font-semibold">Thi thử đề ngẫu nhiên</h3>
                         {/* <span className="bg-green-800 text-white text-xs px-2 py-0.5 rounded-full mt-2 inline-block">B1</span> */}
-                    </div>
+                    </a>
 
                     {/* Card 2 */}
                     <div className="bg-gray-50 p-6 rounded shadow text-center hover:shadow-md transition relative cursor-pointer border border-gray-200">
@@ -22,7 +22,7 @@ const MenuBox = () => {
                     <div className="bg-gray-50 p-6 rounded shadow text-center hover:shadow-md transition relative cursor-pointer border border-gray-200">
                         <div className="text-6xl mb-4 text-indigo-700">📘</div>
                         <h3 className="text-lg font-semibold">Ôn tập toàn bộ câu hỏi</h3>
-                        <span className="absolute top-2 right-2 bg-indigo-700 text-white text-xs px-2 py-0.5 rounded-full">574</span>
+                        <span className="absolute top-2 right-2 bg-indigo-700 text-white text-xs px-2 py-0.5 rounded-full">250</span>
                     </div>
 
                     {/* Card 4 */}

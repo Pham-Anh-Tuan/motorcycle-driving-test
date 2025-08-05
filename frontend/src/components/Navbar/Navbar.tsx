@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { FiMenu } from "react-icons/fi";
-import Logo from "../../assets/a1Logo.png";
+import Logo from "../../../public/a1Logo.png";
 
 const navMenus = [
   {
@@ -9,6 +9,10 @@ const navMenus = [
   },
   {
     name: "Tin tức",
+    link: "/#about",
+  },
+  {
+    name: "Mẹo thi",
     link: "/#about",
   },
   {
