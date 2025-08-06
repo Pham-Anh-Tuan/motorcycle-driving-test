@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { FiMenu } from "react-icons/fi";
-import Logo from "../../../public/a1Logo.png";
+import Logo from "../../a1Logo.png";
 
 const navMenus = [
   {
@@ -52,7 +52,7 @@ const Navbar: React.FC<NavbarProps> = ({ setLoginPopup }) => {
 
   return (
     <>
-      <nav id="home" className="bg-gray-800">
+      <nav id="home" className="bg-primary">
         <div className="container flex justify-between items-center py-3 sm:py-0">
           {/* <h1 className="text-xl md:text-xl font-bold text-primary flex justify-center items-center ">
             M.
