@@ -52,8 +52,10 @@ const AdminDashboard = () => {
       <aside className={`bg-primary text-white fixed sm:static inset-0 z-10 h-screen transition-all ${sidebarOpen ? "w-64" : "w-16"} duration-300 p-4`}>
         <div className={`flex items-center ${sidebarOpen ? "justify-between" : "justify-center"} mx-auto`}>
           <h1 className={`text-xl font-bold ${!sidebarOpen && "hidden"}`}>
-            <img src={Logo} alt="Logo"
-              className="w-9" />
+            <a href="/">
+              <img src={Logo} alt="Logo"
+                className="w-9" />
+            </a>
           </h1>
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-white text-center">
             <Menu />
@@ -84,7 +86,7 @@ const AdminDashboard = () => {
       <main className="flex-1 p-6 overflow-y-auto ml-16 sm:ml-0">
         {/* <h2 className="text-2xl font-bold mb-4">{activeTab}</h2> */}
         {/* <div className="bg-white shadow p-6 rounded-xl min-h-[400px]"> */}
-          {renderContent()}
+        {renderContent()}
         {/* </div> */}
       </main>
     </div>

@@ -1,6 +1,12 @@
+import { useState } from "react";
 import { truncateText } from "../../hooks/TruncateText";
+import QuestionCreation from "./QuestionCreation";
 
 const QuestionManager = () => {
+    const [showCreation, setShowCreation] = useState(false);
+    const toggleCreation = () => {
+        setShowCreation(!showCreation);
+    };
     return (
         <div className='w-full bg-gray-100 dark:bg-gray-900 overflow-x-hidden'>
             <section className="antialiased">
@@ -34,7 +40,7 @@ const QuestionManager = () => {
                                 </form>
                             </div>
                             <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                                <button
+                                <button onClick={toggleCreation}
                                     type="button" className="flex items-center justify-center text-white bg-gray-800 hover:bg-gray-900 font-medium rounded-sm text-sm px-4 py-2">
                                     <svg className="h-3.5 w-3.5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                         <path clipRule="evenodd" fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
@@ -63,7 +69,7 @@ const QuestionManager = () => {
                                             Phần của đường bộ được sử dụng cho các phương tiện giao thông qua lại là gì?
                                         </th>
                                         <td className="px-4 py-3 w-72 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white">
-                                            B
+                                            <p className='w-24'> B </p>
                                         </td>
                                         <td className="px-4 py-3 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white">
                                             Quy định chung và quy tắc giao thông đường bộ
@@ -74,7 +80,7 @@ const QuestionManager = () => {
                                             “Làn đường” là gì?
                                         </th>
                                         <td className="px-4 py-3 w-72 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white">
-                                            B
+                                            <p className='w-24'> B </p>
                                         </td>
                                         <td className="px-4 py-3 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white">
                                             Câu hỏi khái niệm
@@ -85,7 +91,7 @@ const QuestionManager = () => {
                                             {truncateText("Khi sử dụng giấy phép lái xe đã khai báo mất để điều khiển phương tiện cơ giới đường bộ, ngoài việc bị thu hồi giấy phép lái xe, chịu trách nhiệm trước pháp luật, người lái xe không được cấp giấy phép lái xe trong thời gian bao nhiêu năm?", 80)}
                                         </th>
                                         <td className="px-4 py-3 w-72 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white">
-                                            C
+                                            <p className='w-24'> C </p>
                                         </td>
                                         <td className="px-4 py-3 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white">
                                             Quy định chung và quy tắc giao thông đường bộ
@@ -98,6 +104,12 @@ const QuestionManager = () => {
                     </div>
                 </div>
             </section>
+
+            {showCreation && (
+                <div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%)] max-h-full bg-black bg-opacity-50">
+                    <QuestionCreation toggleCreation={toggleCreation} />
+                </div>
+            )}
         </div>
     )
 }
