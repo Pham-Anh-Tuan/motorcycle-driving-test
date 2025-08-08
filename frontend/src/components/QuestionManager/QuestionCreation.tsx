@@ -117,9 +117,12 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                 <form>
                     <div className="grid gap-4 mb-4 sm:grid-cols-2">
                         <div className="sm:col-span-2">
-                            <label htmlFor="description" className="block mb-2 text-md font-medium text-gray-900 dark:text-white">Câu hỏi</label>
+                            <div className="flex flex-row items-center mb-2 gap-2">
+                                <label htmlFor="question" className="block text-md font-medium text-gray-900 dark:text-white">Câu</label>
+                                <input type="number" min="1" className="border border-gray-300 focus:outline-none focus:border-gray-300 w-14"/>
+                            </div>
                             <textarea
-                                id="description" rows={3} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-sm border border-gray-300 focus:outline-none focus:border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white placeholder-gray-600 placeholder-opacity-40" placeholder="Nhập câu hỏi"></textarea>
+                                id="question" rows={3} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-sm border border-gray-300 focus:outline-none focus:border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white placeholder-gray-600 placeholder-opacity-40" placeholder="Nhập câu hỏi"></textarea>
                         </div>
                     </div>
 

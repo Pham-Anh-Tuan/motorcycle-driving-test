@@ -11,7 +11,6 @@ const QuestionManager = () => {
         <div className='w-full bg-gray-100 dark:bg-gray-900 overflow-x-hidden'>
             <section className="antialiased">
                 <div className="mx-auto w-full">
-
                     {/* ádasd */}
                     <div className="bg-white dark:bg-gray-800 relative shadow-md rounded-sm">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
