@@ -2,6 +2,7 @@ import { Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
+import { mcQuestionApi } from "../../api/api";
 
 interface QuestionCreationProps {
     toggleCreation: () => void;
@@ -9,39 +10,41 @@ interface QuestionCreationProps {
 
 const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) => {
     interface mcQuestion {
+        questionNumber: number;
         prompt: string;
         imageName?: string;
         imageFile?: File | null;
         choices: Choice[];
-        answer: string;
+        answer: number;
         explanation: string;
-        type: string;
+        type: number;
     }
 
     interface Choice {
-        order: number;
+        orderNumber: number;
         content: string;
     }
 
     const [mcQuestion, setMcQuestion] = useState<mcQuestion>({
+        questionNumber: 1,
         prompt: "",
         imageName: "",
         imageFile: null,
         choices: [{
-            order: 1,
+            orderNumber: 1,
             content: "",
         }],
-        answer: "",
+        answer: 1,
         explanation: "",
-        type: "",
+        type: 1,
     });
 
     const addChoice = () => {
         setMcQuestion((prev) => {
-            const nextOrder = prev.choices.length + 1;
+            const nextOrderNumber = prev.choices.length + 1;
 
             const newChoice: Choice = {
-                order: nextOrder,
+                orderNumber: nextOrderNumber,
                 content: ""
             };
 
@@ -78,6 +81,14 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
         });
     };
 
+    const setQuestionNumber = (newQuestionNumber: number) => {
+        setMcQuestion((prev) => ({ ...prev, questionNumber: newQuestionNumber, }));
+    };
+
+    const setPrompt = (newPrompt: string) => {
+        setMcQuestion((prev) => ({ ...prev, prompt: newPrompt, }));
+    };
+
     const setImageName = (newImageName: string) => {
         setMcQuestion(prev => ({ ...prev, imageName: newImageName }));
     };
@@ -86,7 +97,15 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
         setMcQuestion(prev => ({ ...prev, imageFile: newImageFile }));
     };
 
-    const setType = (newType: string) => {
+    const setAnswer = (newAnswer: number) => {
+        setMcQuestion((prev) => ({ ...prev, answer: newAnswer, }));
+    };
+
+    const setExplanation = (newExplanation: string) => {
+        setMcQuestion((prev) => ({ ...prev, explanation: newExplanation, }));
+    };
+
+    const setType = (newType: number) => {
         setMcQuestion((prev) => ({ ...prev, type: newType, }));
     };
 
@@ -99,6 +118,33 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
             setImageFile(file);
         }
     };
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const formData = new FormData();
+        formData.append("questionNumber", mcQuestion.questionNumber.toString());
+        formData.append("prompt", mcQuestion.prompt);
+
+        if (mcQuestion.imageFile) {
+            formData.append("imageFile", mcQuestion.imageFile);
+        }
+
+        mcQuestion.choices.forEach((choice, choiceIndex) => {
+            formData.append(`choices[${choiceIndex}].orderNumber`, choice.orderNumber.toString());
+            formData.append(`choices[${choiceIndex}].content`, choice.content);
+        })
+
+        formData.append("answer", mcQuestion.answer.toString());
+        formData.append("explanation", mcQuestion.explanation);
+        formData.append("type", mcQuestion.type.toString());
+
+        try {
+            await mcQuestionApi.createMcQuestion(formData);
+        } catch (error: any) {
+            console.error("Error saving product:", error);
+        }
+        window.location.reload();
+    }
 
     return (
         <div className="relative p-4 w-full max-w-2xl max-h-full">
@@ -114,15 +160,21 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                     </button>
                 </div>
 
-                <form>
+                <form onSubmit={handleSubmit}>
                     <div className="grid gap-4 mb-4 sm:grid-cols-2">
                         <div className="sm:col-span-2">
                             <div className="flex flex-row items-center mb-2 gap-2">
-                                <label htmlFor="question" className="block text-md font-medium text-gray-900 dark:text-white">Câu</label>
-                                <input type="number" min="1" className="border border-gray-300 focus:outline-none focus:border-gray-300 w-14"/>
+                                <label htmlFor="prompt" className="block text-md font-medium text-gray-900 dark:text-white">Câu</label>
+                                <input onChange={(e) => setQuestionNumber(Number(e.target.value))}
+                                    onKeyDown={(e) => {
+                                        if (e.key === '-' || e.key === 'e') {  // Ngăn "-" và "e" (tránh nhập số mũ)
+                                            e.preventDefault();
+                                        }
+                                    }}
+                                    type="number" min="1" className="border border-gray-300 focus:outline-none focus:border-gray-300 w-14" required />
                             </div>
-                            <textarea
-                                id="question" rows={3} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-sm border border-gray-300 focus:outline-none focus:border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white placeholder-gray-600 placeholder-opacity-40" placeholder="Nhập câu hỏi"></textarea>
+                            <textarea onChange={(e) => setPrompt(e.target.value)}
+                                id="prompt" rows={3} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-sm border border-gray-300 focus:outline-none focus:border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white placeholder-gray-600 placeholder-opacity-40" placeholder="Nhập câu hỏi" required></textarea>
                         </div>
                     </div>
 
@@ -131,7 +183,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                         <div className="mb-1">
                             <label className="">
                                 <IoCloudUploadOutline className='text-gray-500 text-2xl cursor-pointer' />
-                                <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e)} required />
+                                <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e)} />
                             </label>
                         </div>
 
@@ -169,7 +221,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                                     <div className="relative w-full">
                                         <span
                                             className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                            {choice.order} -
+                                            {choice.orderNumber} -
                                         </span>
                                         <input
                                             type="text"
@@ -193,17 +245,17 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                             <label htmlFor="answer" className="block mb-2 text-md font-medium text-gray-900">Đáp án đúng</label>
                             <select
                                 value={mcQuestion.answer}
-                                onChange={(e) => setMcQuestion({ ...mcQuestion, answer: e.target.value })}
+                                onChange={(e) => setAnswer(Number(e.target.value))}
                                 id="answer" className="bg-gray-50 border border-gray-300 focus:outline-none focus:border-gray-300 text-gray-900 text-sm rounded-sm block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required>
                                 {mcQuestion.choices.map((choice) => (
-                                    <option value={choice.order}>{choice.order} - {choice.content}</option>
+                                    <option value={choice.orderNumber}>{choice.orderNumber} - {choice.content}</option>
                                 ))}
                             </select>
                         </div>
 
                         <div>
                             <label htmlFor="category" className="block mb-2 text-md font-medium text-gray-900">Loại câu</label>
-                            <select onChange={(e) => setType(e.target.value)}
+                            <select onChange={(e) => setType(Number(e.target.value))}
                                 id="category" className="bg-gray-50 border border-gray-300 focus:outline-none focus:border-gray-300 text-gray-900 text-sm rounded-sm block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required>
                                 <option value={1}>Khái niệm và quy tắc</option>
                                 <option value={2}>Văn hóa và đạo đức lái xe</option>
@@ -217,8 +269,8 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                     <div className="grid gap-4 mb-4 sm:grid-cols-2">
                         <div className="sm:col-span-2">
                             <label htmlFor="explanation" className="block mb-2 text-md font-medium text-gray-900 dark:text-white">Giải thích</label>
-                            <textarea
-                                id="explanation" rows={3} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-sm border border-gray-300 focus:outline-none focus:border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white placeholder-gray-600 placeholder-opacity-40" placeholder="Nhập phần giải thích cho đáp án đúng"></textarea>
+                            <textarea onChange={(e) => setExplanation(e.target.value)}
+                                id="explanation" rows={3} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-sm border border-gray-300 focus:outline-none focus:border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white placeholder-gray-600 placeholder-opacity-40" placeholder="Nhập phần giải thích cho đáp án đúng" required></textarea>
                         </div>
                     </div>
 
