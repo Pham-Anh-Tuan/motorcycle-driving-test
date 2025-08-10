@@ -17,7 +17,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
         choices: Choice[];
         answer: number;
         explanation: string;
-        type: number;
+        type: string;
     }
 
     interface Choice {
@@ -36,7 +36,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
         }],
         answer: 1,
         explanation: "",
-        type: 1,
+        type: "Khái niệm và quy tắc",
     });
 
     const addChoice = () => {
@@ -105,7 +105,8 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
         setMcQuestion((prev) => ({ ...prev, explanation: newExplanation, }));
     };
 
-    const setType = (newType: number) => {
+    const setType = (newType: string) => {
+        console.log("newType là: " + newType);
         setMcQuestion((prev) => ({ ...prev, type: newType, }));
     };
 
@@ -136,7 +137,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
 
         formData.append("answer", mcQuestion.answer.toString());
         formData.append("explanation", mcQuestion.explanation);
-        formData.append("type", mcQuestion.type.toString());
+        formData.append("type", mcQuestion.type);
 
         try {
             await mcQuestionApi.createMcQuestion(formData);
@@ -255,13 +256,13 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
 
                         <div>
                             <label htmlFor="category" className="block mb-2 text-md font-medium text-gray-900">Loại câu</label>
-                            <select onChange={(e) => setType(Number(e.target.value))}
+                            <select onChange={(e) => setType(e.target.value)}
                                 id="category" className="bg-gray-50 border border-gray-300 focus:outline-none focus:border-gray-300 text-gray-900 text-sm rounded-sm block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required>
-                                <option value={1}>Khái niệm và quy tắc</option>
-                                <option value={2}>Văn hóa và đạo đức lái xe</option>
-                                <option value={3}>Kỹ thuật lái xe</option>
-                                <option value={4}>Biển báo đường bộ</option>
-                                <option value={5}>Sa hình</option>
+                                <option value="Khái niệm và quy tắc">Khái niệm và quy tắc</option>
+                                <option value="Văn hóa và đạo đức lái xe">Văn hóa và đạo đức lái xe</option>
+                                <option value="Kỹ thuật lái xe">Kỹ thuật lái xe</option>
+                                <option value="Biển báo đường bộ">Biển báo đường bộ</option>
+                                <option value="Sa hình">Sa hình</option>
                             </select>
                         </div>
                     </div>
@@ -275,7 +276,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                     </div>
 
                     <div className="flex items-center space-x-4 justify-end mt-4">
-                        <button type="submit" className=" text-white inline-flex items-center bg-gray-800 hover:bg-gray-900 font-medium rounded-sm text-sm px-4 py-2.5 text-center">
+                        <button type="submit" className=" text-white inline-flex items-center bg-gray-800 border border-gray-800 hover:hover:bg-sky-600 hover:border-sky-600 font-medium rounded-sm text-sm px-4 py-2.5 text-center">
                             <svg className="mr-1 -ml-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
                             </svg>

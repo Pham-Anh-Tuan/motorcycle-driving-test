@@ -13,5 +13,5 @@ public class McQuestionReq {
     private List<ChoiceReq> choices;
     private int answer;
     private String explanation;
-    private int type;
+    private String type;
 }

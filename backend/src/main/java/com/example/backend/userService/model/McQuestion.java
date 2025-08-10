@@ -36,5 +36,5 @@ public class McQuestion {
     private String explanation;
 
     @Column(name = "type")
-    private int type;
+    private String type;
 }
