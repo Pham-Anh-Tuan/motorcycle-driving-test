@@ -36,9 +36,19 @@ public class McQuestionController {
         return mcQuestionService.searchManagerMcQuestions(keyword, pageable);
     }
 
+    @GetMapping(path = "/public/mcQuestion/{id}")
+    public ResponseEntity<?> getMcQuestionRes(@PathVariable("id") String id) {
+        return mcQuestionService.getMcQuestionRes(id);
+    }
+
     @PostMapping(value = "/admin/createMcQuestion", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createBanner(@ModelAttribute McQuestionReq mcQuestionReq) {
+    public ResponseEntity<?> createMcQuestion(@ModelAttribute McQuestionReq mcQuestionReq) {
         return mcQuestionService.createMcQuestion(mcQuestionReq);
+    }
+
+    @PostMapping(value = "/admin/updateMcQuestion", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateMcQuestion(@ModelAttribute McQuestionReq mcQuestionReq) {
+        return mcQuestionService.updateMcQuestion(mcQuestionReq);
     }
 
 }

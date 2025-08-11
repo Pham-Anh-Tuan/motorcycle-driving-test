@@ -3,6 +3,7 @@ package com.example.backend.userService.service;
 import com.example.backend.core.mapper.McQuestionMapper;
 import com.example.backend.core.request.ChoiceReq;
 import com.example.backend.core.request.McQuestionReq;
+import com.example.backend.core.response.McQuestionRes;
 import com.example.backend.userService.model.Choice;
 import com.example.backend.userService.model.McQuestion;
 import com.example.backend.userService.repository.McQuestionRepository;
@@ -50,6 +51,14 @@ public class McQuestionService {
         return toPagedResponse(mcQuestionsPage, McQuestionMapper::toManagerMcQuestionResList);
     }
 
+    public ResponseEntity<?> getMcQuestionRes(String mcQuestionId) {
+        Optional<McQuestion> optionalMcQuestion = mcQuestionRepository.findById(mcQuestionId);
+        if (optionalMcQuestion.isEmpty()) {
+            return ResponseEntity.badRequest().body("Không tìm thấy câu hỏi này.");
+        }
+        return ResponseEntity.ok(McQuestionMapper.toMcQuestionRes(optionalMcQuestion.get()));
+    }
+
     @Transactional
     public ResponseEntity<?> createMcQuestion(McQuestionReq mcQuestionReq) {
         McQuestion mcQuestion = new McQuestion();
@@ -72,9 +81,8 @@ public class McQuestionService {
         mcQuestion.setType(mcQuestionReq.getType());
 
         String projectDir = System.getProperty("user.dir");
-
-        if (mcQuestionReq.getImageFile() != null) {
-            MultipartFile file = mcQuestionReq.getImageFile();
+        MultipartFile file = mcQuestionReq.getImageFile();
+        if (file != null) {
             String fileName = UUID.randomUUID().toString() + ".png";
             Path uploadPath = Paths.get(projectDir, ImageConfig.questionPath, fileName);
             mcQuestion.setImageName(fileName);
@@ -85,6 +93,81 @@ public class McQuestionService {
                 throw new RuntimeException("Failed to store image: " + fileName, e);
             }
         }
+        mcQuestionRepository.save(mcQuestion);
+        return ResponseEntity.ok("1");
+    }
+
+    @Transactional
+    public ResponseEntity<?> updateMcQuestion(McQuestionReq mcQuestionReq) {
+        String mcQuestionId = mcQuestionReq.getId();
+        Optional<McQuestion> optionalMcQuestion = mcQuestionRepository.findById(mcQuestionId);
+        if (optionalMcQuestion.isEmpty()) {
+            return ResponseEntity.badRequest().body("Không tìm thấy câu hỏi này.");
+        }
+
+        McQuestion mcQuestion = optionalMcQuestion.get();
+        mcQuestion.setQuestionNumber(mcQuestionReq.getQuestionNumber());
+        mcQuestion.setPrompt(mcQuestionReq.getPrompt());
+
+        mcQuestion.setAnswer(mcQuestionReq.getAnswer());
+        mcQuestion.setExplanation(mcQuestionReq.getExplanation());
+        mcQuestion.setType(mcQuestionReq.getType());
+
+        List<Choice> choiceList = new ArrayList<>();
+        List<ChoiceReq> choiceReqList = mcQuestionReq.getChoices();
+        for (ChoiceReq choiceReq: choiceReqList) {
+            Choice choice = new Choice();
+            choice.setId(UUID.randomUUID().toString());
+            choice.setOrderNumber(choiceReq.getOrderNumber());
+            choice.setContent(choiceReq.getContent());
+            choice.setMcQuestion(mcQuestion);
+            choiceList.add(choice);
+        }
+        mcQuestion.getChoices().clear();
+        mcQuestion.getChoices().addAll(choiceList);
+
+        String projectDir = System.getProperty("user.dir");
+        MultipartFile newImageFile = mcQuestionReq.getImageFile();
+
+        String reqImageName = mcQuestionReq.getImageName();
+
+        if (newImageFile == null && reqImageName.isEmpty()) {
+            // Xóa image cũ nếu có
+            String oldImageName = mcQuestion.getImageName();
+            if(oldImageName != null ) {
+                Path questionPath = Paths.get(projectDir, ImageConfig.questionPath, oldImageName);
+                try {
+                    Files.deleteIfExists(questionPath);
+                } catch (IOException e) {
+                    return ResponseEntity.badRequest().body("Không thể xóa ảnh cũ.");
+                }
+            }
+        }
+
+        if((newImageFile != null && !newImageFile.isEmpty())) {
+            // Xóa image cũ nếu có
+            String oldImageName = mcQuestion.getImageName();
+            if(oldImageName != null ) {
+                Path questionPath = Paths.get(projectDir, ImageConfig.questionPath, oldImageName);
+                try {
+                    Files.deleteIfExists(questionPath);
+                } catch (IOException e) {
+                    return ResponseEntity.badRequest().body("Không thể xóa ảnh cũ.");
+                }
+            }
+
+            // Lưu ảnh mới
+            String newImageName = UUID.randomUUID().toString() + ".png";
+            Path newImagePath = Paths.get(projectDir, ImageConfig.questionPath, newImageName);
+            try {
+                Files.createDirectories(newImagePath.getParent());
+                Files.copy(newImageFile.getInputStream(), newImagePath, StandardCopyOption.REPLACE_EXISTING);
+                mcQuestion.setImageName(newImageName);
+            } catch (IOException e) {
+                return ResponseEntity.badRequest().body("Không thể lưu ảnh mới.");
+            }
+        }
+
         mcQuestionRepository.save(mcQuestion);
         return ResponseEntity.ok("1");
     }

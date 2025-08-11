@@ -16,7 +16,15 @@ export const mcQuestionApi = {
         return axiosJson.get(`/admin/searchManagerMcQuestions`, { params });
     },
 
+    getMcQuestion(id: string) {
+        return axiosJson.get(`/public/mcQuestion/` + id);
+    },
+
     createMcQuestion(formData: FormData) {
         return axiosMultipart.post(`/admin/createMcQuestion`, formData);
+    },
+
+    updateMcQuestion(formData: FormData) {
+        return axiosMultipart.post(`/admin/updateMcQuestion`, formData);
     },
 }

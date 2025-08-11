@@ -7,8 +7,10 @@ import java.util.List;
 
 @Data
 public class McQuestionReq {
+    private String id;
     private int questionNumber;
     private String prompt;
+    private String imageName;
     private MultipartFile imageFile;
     private List<ChoiceReq> choices;
     private int answer;

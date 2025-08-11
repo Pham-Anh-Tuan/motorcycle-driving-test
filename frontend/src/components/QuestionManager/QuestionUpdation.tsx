@@ -1,15 +1,17 @@
-import { Minus, Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { mcQuestionApi } from "../../api/api";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
-import { mcQuestionApi } from "../../api/api";
+import { Minus, Plus } from "lucide-react";
 
-interface QuestionCreationProps {
-    toggleCreation: () => void;
+interface QuestionUpdationProps {
+    updateId: string;
+    toggleUpdation: () => void;
 }
 
-const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) => {
+const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpdation }) => {
     interface mcQuestion {
+        id: string;
         questionNumber: number;
         prompt: string;
         imageName?: string;
@@ -21,16 +23,19 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
     }
 
     interface Choice {
+        id: string;
         orderNumber: number;
         content: string;
     }
 
     const [mcQuestion, setMcQuestion] = useState<mcQuestion>({
+        id: updateId,
         questionNumber: 1,
         prompt: "",
         imageName: "",
         imageFile: null,
         choices: [{
+            id: crypto.randomUUID(),
             orderNumber: 1,
             content: "",
         }],
@@ -44,6 +49,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
             const nextOrderNumber = prev.choices.length + 1;
 
             const newChoice: Choice = {
+                id: crypto.randomUUID(),
                 orderNumber: nextOrderNumber,
                 content: ""
             };
@@ -122,8 +128,13 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData();
+        formData.append("id", updateId);
         formData.append("questionNumber", mcQuestion.questionNumber.toString());
         formData.append("prompt", mcQuestion.prompt);
+
+        if (mcQuestion.imageName != null) {
+            formData.append("imageName", mcQuestion.imageName);
+        }
 
         if (mcQuestion.imageFile) {
             formData.append("imageFile", mcQuestion.imageFile);
@@ -139,19 +150,33 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
         formData.append("type", mcQuestion.type);
 
         try {
-            await mcQuestionApi.createMcQuestion(formData);
+            await mcQuestionApi.updateMcQuestion(formData);
         } catch (error: any) {
             console.error("Error saving question:", error);
         }
         window.location.reload();
     }
 
+    useEffect(() => {
+        console.log("update id là: " + updateId);
+        if (!updateId) return;  // Chặn gọi API nếu id là undefined
+        const fetchApi = async () => {
+            try {
+                const { data } = await mcQuestionApi.getMcQuestion(updateId);
+                setMcQuestion(data);
+            } catch (error) {
+                console.error("Lỗi khi gọi API question:", error);
+            }
+        };
+        fetchApi();
+    }, [updateId]);
+
     return (
         <div className="relative p-4 w-full max-w-2xl max-h-full">
             <div className="relative p-4 bg-white rounded-sm shadow sm:p-5">
                 <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Thêm câu hỏi</h3>
-                    <button onClick={toggleCreation}
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Cập nhật câu hỏi</h3>
+                    <button onClick={toggleUpdation}
                         type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-md text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
                         <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -171,9 +196,11 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                                             e.preventDefault();
                                         }
                                     }}
+                                    value={mcQuestion.questionNumber}
                                     type="number" min="1" className="border border-gray-300 focus:outline-none focus:border-gray-300 w-14" required />
                             </div>
                             <textarea onChange={(e) => setPrompt(e.target.value)}
+                                defaultValue={mcQuestion.prompt}
                                 id="prompt" rows={3} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-sm border border-gray-300 focus:outline-none focus:border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white placeholder-gray-600 placeholder-opacity-40" placeholder="Nhập câu hỏi" required></textarea>
                         </div>
                     </div>
@@ -201,7 +228,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                             <MdOutlineCancel className="absolute top-0 right-0 w-5 h-5 bg-white cursor-pointer text-gray-500 rounded-full -translate-y-1/2 translate-x-1/2"
                                 onClick={() => {
                                     setImageName("");
-                                    setImageFile(null)
+                                    setImageFile(null);
                                 }} />
                         </div>
                     </div>
@@ -270,16 +297,18 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                         <div className="sm:col-span-2">
                             <label htmlFor="explanation" className="block mb-2 text-md font-medium text-gray-900 dark:text-white">Giải thích</label>
                             <textarea onChange={(e) => setExplanation(e.target.value)}
+                                defaultValue={mcQuestion.explanation}
                                 id="explanation" rows={3} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-sm border border-gray-300 focus:outline-none focus:border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white placeholder-gray-600 placeholder-opacity-40" placeholder="Nhập phần giải thích cho đáp án đúng" required></textarea>
                         </div>
                     </div>
 
                     <div className="flex items-center space-x-4 justify-end mt-4">
                         <button type="submit" className=" text-white inline-flex items-center bg-gray-800 border border-gray-800 hover:hover:bg-sky-600 hover:border-sky-600 font-medium rounded-sm text-sm px-4 py-2.5 text-center">
-                            <svg className="mr-1 -ml-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 -ml-0.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                                <path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd" />
                             </svg>
-                            Thêm
+                            Cập nhật
                         </button>
 
                         <button
@@ -297,4 +326,4 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
     )
 }
 
-export default QuestionCreation
+export default QuestionUpdation

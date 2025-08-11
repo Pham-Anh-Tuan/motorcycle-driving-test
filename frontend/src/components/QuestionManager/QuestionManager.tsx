@@ -3,6 +3,7 @@ import { truncateText } from "../../hooks/TruncateText";
 import QuestionCreation from "./QuestionCreation";
 import { mcQuestionApi } from "../../api/api";
 import Pagination from "../../hooks/Pagination";
+import QuestionUpdation from "./QuestionUpdation";
 
 const QuestionManager = () => {
     const [showCreation, setShowCreation] = useState(false);
@@ -10,7 +11,14 @@ const QuestionManager = () => {
         setShowCreation(!showCreation);
     };
 
+    const [showUpdation, setShowUpdation] = useState(false);
+    const toggleUpdation = () => {
+        setShowUpdation(!showUpdation);
+    };
+    const [updateId, setUpdateId] = useState<string>("");
+
     interface McQuestion {
+        id: string;
         questionNumber: number;
         prompt: string;
         type: string;
@@ -138,7 +146,11 @@ const QuestionManager = () => {
 
                                             <td className="px-4 py-3 flex items-center justify-start">
                                                 <div className="flex items-center space-x-4">
-                                                    <button
+                                                    <button onClick={() => {
+                                                        setUpdateId(data.id);
+                                                        console.log("data.id là: " + data.id);
+                                                        toggleUpdation();
+                                                    }}
                                                         type="button" className="w-28 py-2 px-3 flex items-center text-sm font-medium text-center text-white
                                                          bg-primary hover:bg-sky-600 rounded-sm border border-primary hover:border-sky-600">
                                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 -ml-0.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -160,29 +172,6 @@ const QuestionManager = () => {
                                             </td>
                                         </tr>
                                     ))}
-                                    {/* <tr className="border-b dark:border-gray-700">
-                                        <th scope="row" className="px-4 py-3 text-center whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                                            2
-                                        </th>
-                                        <th className="px-4 py-3 text-center whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                                            “Làn đường” là gì?
-                                        </th>
-                                    
-                                        <td className="px-4 py-3 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white">
-                                            Câu hỏi khái niệm
-                                        </td>
-                                    </tr>
-                                    <tr className="border-b dark:border-gray-700">
-                                        <th scope="row" className="px-4 py-3 text-center whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                                            3
-                                        </th>
-                                        <th className="px-4 py-3 text-center whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                                            {truncateText("Khi sử dụng giấy phép lái xe đã khai báo mất để điều khiển phương tiện cơ giới đường bộ, ngoài việc bị thu hồi giấy phép lái xe, chịu trách nhiệm trước pháp luật, người lái xe không được cấp giấy phép lái xe trong thời gian bao nhiêu năm?", 50)}
-                                        </th>
-                                        <td className="px-4 py-3 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white">
-                                            Quy định chung và quy tắc giao thông đường bộ
-                                        </td>
-                                    </tr> */}
                                 </tbody>
                             </table>
                         </div>
@@ -204,6 +193,13 @@ const QuestionManager = () => {
                     <QuestionCreation toggleCreation={toggleCreation} />
                 </div>
             )}
+
+            {showUpdation && (
+                <div tabIndex={-1} aria-hidden="true" className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%)] max-h-full bg-black bg-opacity-50">
+                    <QuestionUpdation updateId={updateId} toggleUpdation={toggleUpdation} />
+                </div>
+            )}
+
         </div>
     )
 }

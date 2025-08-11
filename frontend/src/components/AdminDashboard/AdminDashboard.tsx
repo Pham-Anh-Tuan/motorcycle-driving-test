@@ -67,7 +67,7 @@ const AdminDashboard = () => {
               key={label}
               onClick={() => setActiveTab(label)}
               className={`flex w-full items-center ${sidebarOpen ? "justify-start px-4" : "justify-center"
-                } py-2 rounded-lg hover:bg-sky-600 transition ${activeTab === label ? "bg-sky-700" : "bg-transparent"
+                } py-2 rounded-sm hover:bg-sky-600 transition ${activeTab === label ? "bg-sky-700" : "bg-transparent"
                 }`}
             >
               <Icon className="w-5 h-5" />
