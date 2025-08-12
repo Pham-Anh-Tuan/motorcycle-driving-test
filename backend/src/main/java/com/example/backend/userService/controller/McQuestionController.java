@@ -18,6 +18,11 @@ public class McQuestionController {
     @Autowired
     private McQuestionService mcQuestionService;
 
+    @GetMapping("/admin/max-question-number")
+    public ResponseEntity<Integer> getMaxQuestionNumber() {
+        return ResponseEntity.ok(mcQuestionService.getMaxQuestionNumber());
+    }
+
     @GetMapping(path = "/admin/managerMcQuestions")
     public Map<String, Object> getManagerProducts(@RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "15") int size
@@ -51,4 +56,8 @@ public class McQuestionController {
         return mcQuestionService.updateMcQuestion(mcQuestionReq);
     }
 
+    @DeleteMapping("/admin/deleteMcQuestion/{id}")
+    public ResponseEntity<?> deleteMcQuestion(@PathVariable String id) {
+        return mcQuestionService.deleteMcQuestion(id);
+    }
 }

@@ -158,7 +158,6 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
     }
 
     useEffect(() => {
-        console.log("update id là: " + updateId);
         if (!updateId) return;  // Chặn gọi API nếu id là undefined
         const fetchApi = async () => {
             try {
@@ -214,15 +213,15 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
                             </label>
                         </div>
 
-                        <div className="mt-1 w-full inline-block relative">
-                            <img src={
+                        <div className="mt-1 w-full relative text-center flex items-center justify-center">
+                            <img className="max-w-full max-h-[300px]" 
+                            src={
                                 typeof mcQuestion.imageName === 'string'
                                     ? mcQuestion.imageName.startsWith('data:image') || mcQuestion.imageName.startsWith('blob:')
                                         ? mcQuestion.imageName // ảnh mới upload
                                         : import.meta.env.VITE_API_URL_QUESTION_IMG + mcQuestion.imageName // ảnh từ server
                                     : '/path/to/default-image.jpg'
                             }
-
                             />
 
                             <MdOutlineCancel className="absolute top-0 right-0 w-5 h-5 bg-white cursor-pointer text-gray-500 rounded-full -translate-y-1/2 translate-x-1/2"
@@ -232,7 +231,7 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
                                 }} />
                         </div>
                     </div>
-                    {/* className="w-full h-48 object-cover shadow border" */}
+        
                     <div className="grid gap-4 mb-4 sm:grid-cols-2">
                         <div className="sm:col-span-2">
                             <div className="flex flex-row items-center py-2">

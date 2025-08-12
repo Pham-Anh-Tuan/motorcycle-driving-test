@@ -1,5 +1,5 @@
 import { Minus, Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
 import { mcQuestionApi } from "../../api/api";
@@ -146,6 +146,19 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
         window.location.reload();
     }
 
+    const fetchMaxQuestionNumber = async () => {
+        try {
+            const { data } = await mcQuestionApi.getMaxQuestionNumber();
+            setQuestionNumber(data + 1);
+        } catch (error) {
+            console.error("Lỗi khi gọi API question:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchMaxQuestionNumber();
+    }, []);
+
     return (
         <div className="relative p-4 w-full max-w-2xl max-h-full">
             <div className="relative p-4 bg-white rounded-sm shadow sm:p-5">
@@ -171,6 +184,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                                             e.preventDefault();
                                         }
                                     }}
+                                    value={mcQuestion.questionNumber}
                                     type="number" min="1" className="border border-gray-300 focus:outline-none focus:border-gray-300 w-14" required />
                             </div>
                             <textarea onChange={(e) => setPrompt(e.target.value)}
@@ -187,15 +201,15 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                             </label>
                         </div>
 
-                        <div className="mt-1 w-full inline-block relative">
-                            <img src={
-                                typeof mcQuestion.imageName === 'string'
-                                    ? mcQuestion.imageName.startsWith('data:image') || mcQuestion.imageName.startsWith('blob:')
-                                        ? mcQuestion.imageName // ảnh mới upload
-                                        : import.meta.env.VITE_API_URL_QUESTION_IMG + mcQuestion.imageName // ảnh từ server
-                                    : '/path/to/default-image.jpg'
-                            }
-
+                        <div className="mt-1 w-full relative text-center flex items-center justify-center">
+                            <img className="max-w-full max-h-[300px]"
+                                src={
+                                    typeof mcQuestion.imageName === 'string'
+                                        ? mcQuestion.imageName.startsWith('data:image') || mcQuestion.imageName.startsWith('blob:')
+                                            ? mcQuestion.imageName // ảnh mới upload
+                                            : import.meta.env.VITE_API_URL_QUESTION_IMG + mcQuestion.imageName // ảnh từ server
+                                        : '/path/to/default-image.jpg'
+                                }
                             />
 
                             <MdOutlineCancel className="absolute top-0 right-0 w-5 h-5 bg-white cursor-pointer text-gray-500 rounded-full -translate-y-1/2 translate-x-1/2"
@@ -205,7 +219,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                                 }} />
                         </div>
                     </div>
-                    {/* className="w-full h-48 object-cover shadow border" */}
+
                     <div className="grid gap-4 mb-4 sm:grid-cols-2">
                         <div className="sm:col-span-2">
                             <div className="flex flex-row items-center py-2">

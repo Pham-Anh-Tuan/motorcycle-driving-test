@@ -1,6 +1,10 @@
 import { axiosJson, axiosMultipart } from "./axios";
 
 export const mcQuestionApi = {
+    getMaxQuestionNumber() {
+        return axiosJson.get(`/admin/max-question-number`);
+    },
+
     getManagerMcQuestions(page: number, size: number) {
         const params = new URLSearchParams();
         params.append("page", page.toString());
@@ -27,4 +31,8 @@ export const mcQuestionApi = {
     updateMcQuestion(formData: FormData) {
         return axiosMultipart.post(`/admin/updateMcQuestion`, formData);
     },
+
+    deleteMcQuestion(id: string) {
+        return axiosJson.delete(`/admin/deleteMcQuestion/` + id);
+    }
 }

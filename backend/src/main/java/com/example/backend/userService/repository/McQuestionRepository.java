@@ -20,4 +20,7 @@ public interface McQuestionRepository extends JpaRepository<McQuestion, String> 
     Page<McQuestion> searchAllFields(@Param("keyword") String keyword, Pageable pageable);
 
     Page<McQuestion> findAllByOrderByQuestionNumberAsc(Pageable pageable);
+
+    @Query("SELECT MAX(q.questionNumber) FROM McQuestion q")
+    Integer findMaxQuestionNumber();
 }
