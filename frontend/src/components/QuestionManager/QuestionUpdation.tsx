@@ -214,14 +214,14 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
                         </div>
 
                         <div className="mt-1 w-full relative text-center flex items-center justify-center">
-                            <img className="max-w-full max-h-[300px]" 
-                            src={
-                                typeof mcQuestion.imageName === 'string'
-                                    ? mcQuestion.imageName.startsWith('data:image') || mcQuestion.imageName.startsWith('blob:')
-                                        ? mcQuestion.imageName // ảnh mới upload
-                                        : import.meta.env.VITE_API_URL_QUESTION_IMG + mcQuestion.imageName // ảnh từ server
-                                    : '/path/to/default-image.jpg'
-                            }
+                            <img className="max-w-full max-h-[300px]"
+                                src={
+                                    mcQuestion.imageName
+                                        ? mcQuestion.imageName.startsWith('data:image') || mcQuestion.imageName.startsWith('blob:')
+                                            ? mcQuestion.imageName
+                                            : import.meta.env.VITE_API_URL_QUESTION_IMG + mcQuestion.imageName
+                                        : '/path/to/default-image.jpg'
+                                }
                             />
 
                             <MdOutlineCancel className="absolute top-0 right-0 w-5 h-5 bg-white cursor-pointer text-gray-500 rounded-full -translate-y-1/2 translate-x-1/2"
@@ -231,7 +231,7 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
                                 }} />
                         </div>
                     </div>
-        
+
                     <div className="grid gap-4 mb-4 sm:grid-cols-2">
                         <div className="sm:col-span-2">
                             <div className="flex flex-row items-center py-2">
@@ -282,6 +282,7 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
                         <div>
                             <label htmlFor="category" className="block mb-2 text-md font-medium text-gray-900">Loại câu</label>
                             <select onChange={(e) => setType(e.target.value)}
+                                value={mcQuestion.type}
                                 id="category" className="bg-gray-50 border border-gray-300 focus:outline-none focus:border-gray-300 text-gray-900 text-sm rounded-sm block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required>
                                 <option value="Khái niệm và quy tắc">Khái niệm và quy tắc</option>
                                 <option value="Văn hóa và đạo đức lái xe">Văn hóa và đạo đức lái xe</option>
