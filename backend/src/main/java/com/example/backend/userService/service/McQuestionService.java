@@ -105,6 +105,8 @@ public class McQuestionService {
 
             // Cập nhật thông tin cơ bản
             mcQuestion.setQuestionNumber(req.getQuestionNumber());
+            System.out.println("is Critical là: " + req.isCritical());
+            mcQuestion.setCritical(req.isCritical());
             mcQuestion.setPrompt(req.getPrompt());
             mcQuestion.setAnswer(req.getAnswer());
             mcQuestion.setExplanation(req.getExplanation());

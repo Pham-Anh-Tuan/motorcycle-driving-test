@@ -87,7 +87,7 @@ const Navbar: React.FC<NavbarProps> = ({ setLoginPopup }) => {
 
             <div className="flex gap-2 sm:mt-0">
               <button onClick={() => setLoginPopup(true)}
-                className="bg-blue-500 px-3 py-2 rounded-sm text-sm font-normal text-white">Đăng nhập</button>
+                className="bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded-sm text-sm font-normal text-white">Đăng nhập</button>
             </div>
 
             {/* Mobile Responsive Menu */}

@@ -9,6 +9,7 @@ import java.util.List;
 public class McQuestionReq {
     private String id;
     private int questionNumber;
+    private boolean critical;
     private String prompt;
     private String imageName;
     private MultipartFile imageFile;

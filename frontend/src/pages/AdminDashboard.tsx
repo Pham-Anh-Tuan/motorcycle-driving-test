@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Menu, Newspaper, TrafficCone, FileQuestion, LogOut } from "lucide-react";
-import Logo from "../../a1Logo.png";
-import QuestionManager from "../QuestionManager/QuestionManager";
+import Logo from "../a1Logo.png";
+import QuestionManager from "../components/QuestionManager/QuestionManager";
 
 const menuItems = [
   { label: "Câu hỏi", icon: FileQuestion },
@@ -84,10 +84,7 @@ const AdminDashboard = () => {
         </div>
       </aside>
       <main className="flex-1 p-6 overflow-y-auto ml-16 sm:ml-0">
-        {/* <h2 className="text-2xl font-bold mb-4">{activeTab}</h2> */}
-        {/* <div className="bg-white shadow p-6 rounded-xl min-h-[400px]"> */}
         {renderContent()}
-        {/* </div> */}
       </main>
     </div>
   );

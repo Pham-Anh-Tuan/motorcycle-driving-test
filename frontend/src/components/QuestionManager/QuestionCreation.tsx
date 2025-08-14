@@ -1,5 +1,5 @@
 import { Minus, Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
 import { mcQuestionApi } from "../../api/api";
@@ -36,7 +36,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
         }],
         answer: 1,
         explanation: "",
-        type: "Khái niệm và quy tắc",
+        type: "Sa hình",
     });
 
     const addChoice = () => {
@@ -109,6 +109,8 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
         setMcQuestion((prev) => ({ ...prev, type: newType, }));
     };
 
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
@@ -116,6 +118,17 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
             reader.onload = () => setImageName(reader.result as string);
             reader.readAsDataURL(file);
             setImageFile(file);
+        }
+        event.target.value = ""; // reset để lần sau chọn cùng file vẫn trigger onChange
+    };
+
+    const handleRemoveImage = () => {
+        setImageName("");
+        setImageFile(null);
+
+        // Reset input file
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
         }
     };
 
@@ -176,16 +189,28 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                 <form onSubmit={handleSubmit}>
                     <div className="grid gap-4 mb-4 sm:grid-cols-2">
                         <div className="sm:col-span-2">
-                            <div className="flex flex-row items-center mb-2 gap-2">
-                                <label htmlFor="prompt" className="block text-md font-medium text-gray-900 dark:text-white">Câu</label>
-                                <input onChange={(e) => setQuestionNumber(Number(e.target.value))}
-                                    onKeyDown={(e) => {
-                                        if (e.key === '-' || e.key === 'e') {  // Ngăn "-" và "e" (tránh nhập số mũ)
-                                            e.preventDefault();
-                                        }
-                                    }}
-                                    value={mcQuestion.questionNumber}
-                                    type="number" min="1" className="border border-gray-300 focus:outline-none focus:border-gray-300 w-14" required />
+                            <div className="flex flex-row justify-between">
+                                <div className="flex flex-row items-center mb-2 gap-2">
+                                    <label htmlFor="prompt" className="block text-md font-medium text-gray-900 dark:text-white">Câu</label>
+                                    <input onChange={(e) => setQuestionNumber(Number(e.target.value))}
+                                        onKeyDown={(e) => {
+                                            if (e.key === '-' || e.key === 'e') {  // Ngăn "-" và "e" (tránh nhập số mũ)
+                                                e.preventDefault();
+                                            }
+                                        }}
+                                        value={mcQuestion.questionNumber}
+                                        type="number" min="1" className="border border-gray-300 focus:outline-none focus:border-gray-300 w-14" required />
+                                </div>
+                                <div className="flex flex-row items-center mb-2 gap-2">
+                                    <input
+                                        type="checkbox"
+                                        id="isCritical"
+                                        className="w-4 h-4 accent-red-600 border-gray-300 rounded focus:ring-red-700"
+                                    />
+                                    <label htmlFor="isCritical" className="text-md font-medium">
+                                        Câu liệt
+                                    </label>
+                                </div>
                             </div>
                             <textarea onChange={(e) => setPrompt(e.target.value)}
                                 id="prompt" rows={3} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-sm border border-gray-300 focus:outline-none focus:border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white placeholder-gray-600 placeholder-opacity-40" placeholder="Nhập câu hỏi" required></textarea>
@@ -213,10 +238,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                             />
 
                             <MdOutlineCancel className="absolute top-0 right-0 w-5 h-5 bg-white cursor-pointer text-gray-500 rounded-full -translate-y-1/2 translate-x-1/2"
-                                onClick={() => {
-                                    setImageName("");
-                                    setImageFile(null);
-                                }} />
+                                onClick={handleRemoveImage} />
                         </div>
                     </div>
 
@@ -232,7 +254,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                             </div>
                             {mcQuestion.choices.map((choice, index) => (
                                 <div key={index}
-                                className="flex flex-row items-center mb-2">
+                                    className="flex flex-row items-center mb-2">
                                     <div className="relative w-full">
                                         <span
                                             className="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -271,7 +293,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                         <div>
                             <label htmlFor="category" className="block mb-2 text-md font-medium text-gray-900">Loại câu</label>
                             <select onChange={(e) => setType(e.target.value)}
-                                defaultValue={"Biển báo đường bộ"}
+                                defaultValue={"Sa hình"}
                                 id="category" className="bg-gray-50 border border-gray-300 focus:outline-none focus:border-gray-300 text-gray-900 text-sm rounded-sm block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required>
                                 <option value="Khái niệm và quy tắc">Khái niệm và quy tắc</option>
                                 <option value="Văn hóa và đạo đức lái xe">Văn hóa và đạo đức lái xe</option>
@@ -298,7 +320,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                             Thêm
                         </button>
 
-                        <button
+                        <button onClick={toggleCreation}
                             type="button" className="text-red-600 inline-flex items-center hover:text-white border border-red-600 hover:bg-red-600 font-medium rounded-sm text-sm px-5 py-2.5 text-center">
                             <svg className="mr-1 -ml-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />

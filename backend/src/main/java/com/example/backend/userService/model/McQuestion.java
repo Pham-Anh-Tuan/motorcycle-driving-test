@@ -20,6 +20,9 @@ public class McQuestion {
     @Column(name = "questionNumber")
     private int questionNumber;
 
+    @Column(name = "isCritical")
+    private boolean isCritical;
+
     @Column(nullable = false, length = 3000)
     private String prompt;
 

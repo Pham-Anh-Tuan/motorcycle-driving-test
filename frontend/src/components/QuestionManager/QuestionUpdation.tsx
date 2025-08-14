@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { mcQuestionApi } from "../../api/api";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
@@ -13,6 +13,7 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
     interface mcQuestion {
         id: string;
         questionNumber: number;
+        isCritical: boolean;
         prompt: string;
         imageName?: string;
         imageFile?: File | null;
@@ -31,6 +32,7 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
     const [mcQuestion, setMcQuestion] = useState<mcQuestion>({
         id: updateId,
         questionNumber: 1,
+        isCritical: false,
         prompt: "",
         imageName: "",
         imageFile: null,
@@ -91,6 +93,10 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
         setMcQuestion((prev) => ({ ...prev, questionNumber: newQuestionNumber, }));
     };
 
+    const setIsCritical = (newIsCritical: boolean) => {
+        setMcQuestion((prev) => ({ ...prev, isCritical: newIsCritical, }));
+    };
+
     const setPrompt = (newPrompt: string) => {
         setMcQuestion((prev) => ({ ...prev, prompt: newPrompt, }));
     };
@@ -115,6 +121,8 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
         setMcQuestion((prev) => ({ ...prev, type: newType, }));
     };
 
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
@@ -123,6 +131,17 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
             reader.readAsDataURL(file);
             setImageFile(file);
         }
+        event.target.value = ""; // reset để lần sau chọn cùng file vẫn trigger onChange
+    };
+
+    const handleRemoveImage = () => {
+        setImageName("");
+        setImageFile(null);
+
+        // Reset input file
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
     };
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -130,6 +149,8 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
         const formData = new FormData();
         formData.append("id", updateId);
         formData.append("questionNumber", mcQuestion.questionNumber.toString());
+        formData.append("isCritical", mcQuestion.isCritical.toString());
+        console.log("asdas: ", mcQuestion.isCritical.toString());
         formData.append("prompt", mcQuestion.prompt);
 
         if (mcQuestion.imageName != null) {
@@ -154,7 +175,8 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
         } catch (error: any) {
             console.error("Error saving question:", error);
         }
-        window.location.reload();
+        // toggleUpdation();
+        // window.location.reload();
     }
 
     useEffect(() => {
@@ -187,16 +209,30 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
                 <form onSubmit={handleSubmit}>
                     <div className="grid gap-4 mb-4 sm:grid-cols-2">
                         <div className="sm:col-span-2">
-                            <div className="flex flex-row items-center mb-2 gap-2">
-                                <label htmlFor="prompt" className="block text-md font-medium text-gray-900 dark:text-white">Câu</label>
-                                <input onChange={(e) => setQuestionNumber(Number(e.target.value))}
-                                    onKeyDown={(e) => {
-                                        if (e.key === '-' || e.key === 'e') {  // Ngăn "-" và "e" (tránh nhập số mũ)
-                                            e.preventDefault();
-                                        }
-                                    }}
-                                    value={mcQuestion.questionNumber}
-                                    type="number" min="1" className="border border-gray-300 focus:outline-none focus:border-gray-300 w-14" required />
+                            <div className="flex flex-row justify-between">
+                                <div className="flex flex-row items-center mb-2 gap-2">
+                                    <label htmlFor="prompt" className="block text-md font-medium text-gray-900 dark:text-white">Câu</label>
+                                    <input onChange={(e) => setQuestionNumber(Number(e.target.value))}
+                                        onKeyDown={(e) => {
+                                            if (e.key === '-' || e.key === 'e') {  // Ngăn "-" và "e" (tránh nhập số mũ)
+                                                e.preventDefault();
+                                            }
+                                        }}
+                                        value={mcQuestion.questionNumber}
+                                        type="number" min="1" className="border border-gray-300 focus:outline-none focus:border-gray-300 w-14" required />
+                                </div>
+                                <div className="flex flex-row items-center mb-2 gap-2">
+                                    <input
+                                        onChange={(e) =>setIsCritical(e.target.checked)}
+                                        checked={mcQuestion.isCritical}
+                                        type="checkbox"
+                                        id="isCritical"
+                                        className="w-4 h-4 accent-red-600 border-gray-300 rounded focus:ring-red-700"
+                                    />
+                                    <label htmlFor="isCritical" className="text-md font-medium">
+                                        Câu liệt
+                                    </label>
+                                </div>
                             </div>
                             <textarea onChange={(e) => setPrompt(e.target.value)}
                                 defaultValue={mcQuestion.prompt}
@@ -209,7 +245,7 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
                         <div className="mb-1">
                             <label className="">
                                 <IoCloudUploadOutline className='text-gray-500 text-2xl cursor-pointer' />
-                                <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e)} />
+                                <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e)} />
                             </label>
                         </div>
 
@@ -225,10 +261,7 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
                             />
 
                             <MdOutlineCancel className="absolute top-0 right-0 w-5 h-5 bg-white cursor-pointer text-gray-500 rounded-full -translate-y-1/2 translate-x-1/2"
-                                onClick={() => {
-                                    setImageName("");
-                                    setImageFile(null);
-                                }} />
+                                onClick={handleRemoveImage} />
                         </div>
                     </div>
 
@@ -311,7 +344,7 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
                             Cập nhật
                         </button>
 
-                        <button
+                        <button onClick={toggleUpdation}
                             type="button" className="text-red-600 inline-flex items-center hover:text-white border border-red-600 hover:bg-red-600 font-medium rounded-sm text-sm px-5 py-2.5 text-center">
                             <svg className="mr-1 -ml-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
