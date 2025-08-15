@@ -21,6 +21,8 @@ public interface McQuestionRepository extends JpaRepository<McQuestion, String> 
 
     Page<McQuestion> findAllByOrderByQuestionNumberAsc(Pageable pageable);
 
+    Page<McQuestion> findAllByIsCriticalOrderByQuestionNumberAsc(boolean isCritical, Pageable pageable);
+
     @Query("SELECT MAX(q.questionNumber) FROM McQuestion q")
     Integer findMaxQuestionNumber();
 }

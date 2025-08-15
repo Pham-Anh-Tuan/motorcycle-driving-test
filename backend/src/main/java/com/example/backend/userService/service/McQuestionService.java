@@ -55,6 +55,11 @@ public class McQuestionService {
         return toPagedResponse(mcQuestionsPage, McQuestionMapper::toManagerMcQuestionResList);
     }
 
+    public Map<String, Object> getManagerCriticalMcQuestions(Pageable pageable) {
+        Page<McQuestion> mcQuestionsPage = mcQuestionRepository.findAllByIsCriticalOrderByQuestionNumberAsc(true ,pageable);
+        return toPagedResponse(mcQuestionsPage, McQuestionMapper::toManagerMcQuestionResList);
+    }
+
     public ResponseEntity<?> getMcQuestionRes(String mcQuestionId) {
         Optional<McQuestion> optionalMcQuestion = mcQuestionRepository.findById(mcQuestionId);
         if (optionalMcQuestion.isEmpty()) {
@@ -68,6 +73,7 @@ public class McQuestionService {
         McQuestion mcQuestion = new McQuestion();
         mcQuestion.setId(UUID.randomUUID().toString());
         mcQuestion.setQuestionNumber(mcQuestionReq.getQuestionNumber());
+        mcQuestion.setCritical(mcQuestionReq.isCritical());
         mcQuestion.setPrompt(mcQuestionReq.getPrompt());
 
         List<Choice> choiceList = new ArrayList<>();
@@ -105,7 +111,6 @@ public class McQuestionService {
 
             // Cập nhật thông tin cơ bản
             mcQuestion.setQuestionNumber(req.getQuestionNumber());
-            System.out.println("is Critical là: " + req.isCritical());
             mcQuestion.setCritical(req.isCritical());
             mcQuestion.setPrompt(req.getPrompt());
             mcQuestion.setAnswer(req.getAnswer());

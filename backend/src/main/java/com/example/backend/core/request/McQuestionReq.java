@@ -9,7 +9,7 @@ import java.util.List;
 public class McQuestionReq {
     private String id;
     private int questionNumber;
-    private boolean critical;
+    private Boolean isCritical;
     private String prompt;
     private String imageName;
     private MultipartFile imageFile;
@@ -17,4 +17,12 @@ public class McQuestionReq {
     private int answer;
     private String explanation;
     private String type;
+
+    public void setCritical(boolean critical) {
+        isCritical = critical;
+    }
+
+    public boolean isCritical() {
+        return isCritical;
+    }
 }

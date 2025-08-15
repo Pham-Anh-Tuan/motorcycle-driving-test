@@ -11,6 +11,7 @@ interface QuestionCreationProps {
 const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) => {
     interface mcQuestion {
         questionNumber: number;
+        isCritical: boolean;
         prompt: string;
         imageName?: string;
         imageFile?: File | null;
@@ -27,6 +28,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
 
     const [mcQuestion, setMcQuestion] = useState<mcQuestion>({
         questionNumber: 1,
+        isCritical: false,
         prompt: "",
         imageName: "",
         imageFile: null,
@@ -36,7 +38,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
         }],
         answer: 1,
         explanation: "",
-        type: "Sa hình",
+        type: "Khái niệm và quy tắc",
     });
 
     const addChoice = () => {
@@ -83,6 +85,10 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
 
     const setQuestionNumber = (newQuestionNumber: number) => {
         setMcQuestion((prev) => ({ ...prev, questionNumber: newQuestionNumber, }));
+    };
+
+    const setIsCritical = (newIsCritical: boolean) => {
+        setMcQuestion((prev) => ({ ...prev, isCritical: newIsCritical, }));
     };
 
     const setPrompt = (newPrompt: string) => {
@@ -136,6 +142,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
         event.preventDefault();
         const formData = new FormData();
         formData.append("questionNumber", mcQuestion.questionNumber.toString());
+        formData.append("isCritical", mcQuestion.isCritical.toString());
         formData.append("prompt", mcQuestion.prompt);
 
         if (mcQuestion.imageFile) {
@@ -203,6 +210,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                                 </div>
                                 <div className="flex flex-row items-center mb-2 gap-2">
                                     <input
+                                        onChange={(e) => setIsCritical(e.target.checked)}
                                         type="checkbox"
                                         id="isCritical"
                                         className="w-4 h-4 accent-red-600 border-gray-300 rounded focus:ring-red-700"
@@ -293,7 +301,6 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
                         <div>
                             <label htmlFor="category" className="block mb-2 text-md font-medium text-gray-900">Loại câu</label>
                             <select onChange={(e) => setType(e.target.value)}
-                                defaultValue={"Sa hình"}
                                 id="category" className="bg-gray-50 border border-gray-300 focus:outline-none focus:border-gray-300 text-gray-900 text-sm rounded-sm block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required>
                                 <option value="Khái niệm và quy tắc">Khái niệm và quy tắc</option>
                                 <option value="Văn hóa và đạo đức lái xe">Văn hóa và đạo đức lái xe</option>

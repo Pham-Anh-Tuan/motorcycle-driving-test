@@ -24,11 +24,19 @@ public class McQuestionController {
     }
 
     @GetMapping(path = "/admin/managerMcQuestions")
-    public Map<String, Object> getManagerProducts(@RequestParam(defaultValue = "0") int page,
+    public Map<String, Object> getManagerQuestions(@RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "15") int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return mcQuestionService.getManagerMcQuestions(pageable);
+    }
+
+    @GetMapping(path = "/admin/managerCriticalMcQuestions")
+    public Map<String, Object> getManagerCriticalQuestions(@RequestParam(defaultValue = "0") int page,
+                                                  @RequestParam(defaultValue = "15") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return mcQuestionService.getManagerCriticalMcQuestions(pageable);
     }
 
     @GetMapping(path = "/admin/searchManagerMcQuestions")

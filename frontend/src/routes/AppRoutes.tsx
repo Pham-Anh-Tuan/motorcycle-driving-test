@@ -13,8 +13,8 @@ const AppRoutes = () => {
                     <Route index element={<>
                         <MenuBox />
                     </>} />
-                    <Route path="de-ngau-nhien" element={<Exam />} />
                     <Route path="cau-truc-thi-ngau-nhien" element={<RandomStructure/>} />
+                    <Route path="de-ngau-nhien" element={<Exam />} />
                 </Route>
 
                 <Route path="/quan-tri" element={<AdminDashboard />} />

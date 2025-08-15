@@ -26,6 +26,7 @@ const QuestionManager = () => {
     interface McQuestion {
         id: string;
         questionNumber: number;
+        isCritical: boolean;
         prompt: string;
         type: string;
     }
@@ -37,23 +38,39 @@ const QuestionManager = () => {
 
     const [keyword, setKeyword] = useState("");
 
-    const loadMcQuestions = async (pageParam: number) => {
+    const [displayCritical, setDisplayCritical] = useState(false);
+    const loadMcQuestions = async (pageParam: number, showCritical?: boolean) => {
         try {
-            const { data } = await mcQuestionApi.getManagerMcQuestions(pageParam, 15);
-            setMcQuestionList(data.content);
-            setTotalPages(data.totalPages);
-            setTotalMcQuestions(data.totalElements);
-            setPage(data.number); // hoặc pageParam
+            let dataResponse;
+            const critical = showCritical ?? displayCritical;
+            if (critical) {
+                const { data } = await mcQuestionApi.getManagerCriticalQuestions(pageParam, 15);
+                dataResponse = data;
+            } else {
+                const { data } = await mcQuestionApi.getManagerMcQuestions(pageParam, 15);
+                dataResponse = data;
+            }
+
+            setMcQuestionList(dataResponse.content);
+            setTotalPages(dataResponse.totalPages);
+            setTotalMcQuestions(dataResponse.totalElements);
+            setPage(dataResponse.number); // hoặc pageParam
+
+            // setMcQuestionList(data.content);
+            // setTotalPages(data.totalPages);
+            // setTotalMcQuestions(data.totalElements);
+            // setPage(data.number); // hoặc pageParam
         } catch (error) {
             console.error("Lỗi gọi API:", error);
         }
     };
 
-    const loadSearchResults = async (pageParam: number, e?: React.FormEvent) => {
+    const loadSearchResults = async (pageParam: number, e?: React.FormEvent, keywordParam?: string) => {
         if (e) e.preventDefault();
 
+        const searchValue = keywordParam ?? keyword;
         try {
-            const { data } = await mcQuestionApi.searchManagerMcQuestions(keyword.trim(), pageParam, 15);
+            const { data } = await mcQuestionApi.searchManagerMcQuestions(searchValue.trim(), pageParam, 15);
             setMcQuestionList(data.content);
             setTotalPages(data.totalPages);
             setTotalMcQuestions(data.totalElements);
@@ -98,6 +115,16 @@ const QuestionManager = () => {
                                 </h3>
                                 <span className="dark:text-white text-sm">Tổng số: {totalMcQuestions}</span>
                             </div>
+
+                            <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+                                <button onClick={toggleCreation}
+                                    type="button" className="flex items-center justify-center text-white bg-gray-800 hover:bg-sky-600 font-medium rounded-sm text-sm px-4 py-2">
+                                    <svg className="h-3.5 w-3.5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path clipRule="evenodd" fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                                    </svg>
+                                    Thêm câu hỏi
+                                </button>
+                            </div>
                         </div>
                         <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
                             <div className="w-full md:w-1/2">
@@ -112,20 +139,43 @@ const QuestionManager = () => {
                                             </svg>
                                         </button>
                                         <input
-                                            value={keyword}
                                             onChange={(e) => setKeyword(e.target.value)}
                                             type="text" id="simple-search" className="bg-gray-50 border border-gray-300 focus:outline-none focus:border-gray-300 text-gray-900 text-sm rounded-sm block w-full pl-10 p-2" placeholder="Tìm kiếm" required />
                                     </div>
                                 </form>
                             </div>
-                            <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                                <button onClick={toggleCreation}
-                                    type="button" className="flex items-center justify-center text-white bg-gray-800 hover:bg-sky-600 font-medium rounded-sm text-sm px-4 py-2">
-                                    <svg className="h-3.5 w-3.5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                        <path clipRule="evenodd" fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
-                                    </svg>
-                                    Thêm câu hỏi
-                                </button>
+
+                            <div className="flex flex-row w-full md:w-auto gap-8">
+                                <div className="flex flex-row items-center gap-2">
+                                    <input
+                                        onChange={(e) => {
+                                            setDisplayCritical(e.target.checked);
+                                            loadMcQuestions(0, e.target.checked)
+                                        }}
+                                        type="checkbox"
+                                        id="isCritical"
+                                        className="w-4 h-4 accent-red-600 border-gray-300 rounded focus:ring-red-700"
+                                    />
+                                    <label htmlFor="isCritical" className="text-md w-14">
+                                        Câu liệt
+                                    </label>
+                                </div>
+
+                                <div className="w-full">
+                                    <select onChange={(e) => {
+                                        const selectedCategory = e.target.value;
+                                        setKeyword(selectedCategory);
+                                        loadSearchResults(0, e, selectedCategory);
+                                    }}
+                                        id="category" className="bg-gray-50 border border-gray-300 focus:outline-none focus:border-gray-300 text-gray-900 text-sm rounded-sm block w-full p-2">
+                                        <option value="">--Tất cả các loại câu--</option>
+                                        <option value="Khái niệm và quy tắc">Khái niệm và quy tắc</option>
+                                        <option value="Văn hóa và đạo đức lái xe">Văn hóa và đạo đức lái xe</option>
+                                        <option value="Kỹ thuật lái xe">Kỹ thuật lái xe</option>
+                                        <option value="Biển báo đường bộ">Biển báo đường bộ</option>
+                                        <option value="Sa hình">Sa hình</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
@@ -136,7 +186,6 @@ const QuestionManager = () => {
                                     <tr>
                                         <th scope="col" className="px-4 py-4 text-center">Câu</th>
                                         <th scope="col" className="px-4 py-4 text-center">Câu hỏi</th>
-                                        {/* <th scope="col" className="px-4 py-3 text-center w-72">Đáp án đúng</th> */}
                                         <th scope="col" className="px-4 py-3 text-center">Loại câu</th>
                                         <th scope="col" className="px-4 py-3 text-center">
                                             <span className="sr-only">Actions</span>
@@ -147,15 +196,16 @@ const QuestionManager = () => {
                                     {mcQuestionList.map((data) => (
                                         <tr key={data.questionNumber}
                                             className="border-b dark:border-gray-700">
-                                            <th scope="row" className="px-4 py-3 text-center whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                                            <th scope="row" className={`px-4 py-3 ${data.isCritical ? 'text-red-600' : 'text-black'} text-center whitespace-nowrap font-medium text-gray-900`}>
                                                 {data.questionNumber}
+                                                {data.isCritical && (
+                                                    <span className="text-red-600 ml-1" title="Câu liệt">⚠</span>
+                                                )}
                                             </th>
-                                            <th className="px-4 py-3 text-center whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                                            <th className="px-4 py-3 text-center whitespace-nowrap font-medium text-gray-900">
                                                 {truncateText(data.prompt, 50)}
                                             </th>
-                                            {/* <td className="px-4 py-3 w-72 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white">
-                                            <p className='w-24'> B </p>
-                                        </td> */}
+
                                             <td className="px-4 py-3 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white">
                                                 {data.type}
                                             </td>

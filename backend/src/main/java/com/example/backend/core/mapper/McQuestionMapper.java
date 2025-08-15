@@ -17,6 +17,7 @@ public class McQuestionMapper {
             ManagerMcQuestionRes res = new ManagerMcQuestionRes(
                     mcQuestion.getId(),
                     mcQuestion.getQuestionNumber(),
+                    mcQuestion.isCritical(),
                     mcQuestion.getPrompt(),
                     mcQuestion.getType()
             );
@@ -27,6 +28,7 @@ public class McQuestionMapper {
     public static McQuestionRes toMcQuestionRes(McQuestion mcQuestion) {
         McQuestionRes res = new McQuestionRes(mcQuestion.getId(),
                 mcQuestion.getQuestionNumber(),
+                mcQuestion.isCritical(),
                 mcQuestion.getPrompt(),
                 mcQuestion.getImageName(),
                 mcQuestion.getAnswer(),

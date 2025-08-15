@@ -63,15 +63,14 @@ const RandomStructure = () => {
 
                 {/* Nút bắt đầu */}
                 <div className="flex items-center space-x-4 justify-end mt-4">
-                    <button
-                        type="button" className="text-red-600 hover:text-white border border-red-600 hover:bg-red-600 font-normal rounded-sm text-sm px-3 py-2">
+                    <a href="/"
+                        className="text-red-600 hover:text-white border border-red-600 hover:bg-red-600 font-normal rounded-sm text-sm px-3 py-2">
                         Hủy
-                    </button>
-                    <button
-                        type="button"
+                    </a>
+                    <a href="/de-ngau-nhien"
                         className="bg-blue-500 hover:bg-blue-600 text-white border border-blue-500 hover:border-blue-600 font-normal rounded-sm text-sm px-3 py-2">
                         Bắt đầu
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>

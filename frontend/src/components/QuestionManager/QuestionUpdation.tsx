@@ -150,7 +150,6 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
         formData.append("id", updateId);
         formData.append("questionNumber", mcQuestion.questionNumber.toString());
         formData.append("isCritical", mcQuestion.isCritical.toString());
-        console.log("asdas: ", mcQuestion.isCritical.toString());
         formData.append("prompt", mcQuestion.prompt);
 
         if (mcQuestion.imageName != null) {
@@ -176,7 +175,7 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
             console.error("Error saving question:", error);
         }
         // toggleUpdation();
-        // window.location.reload();
+        window.location.reload();
     }
 
     useEffect(() => {
