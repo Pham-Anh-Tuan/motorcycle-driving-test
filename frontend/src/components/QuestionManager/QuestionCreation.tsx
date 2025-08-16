@@ -9,7 +9,7 @@ interface QuestionCreationProps {
 }
 
 const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) => {
-    interface mcQuestion {
+    interface McQuestion {
         questionNumber: number;
         isCritical: boolean;
         prompt: string;
@@ -26,7 +26,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
         content: string;
     }
 
-    const [mcQuestion, setMcQuestion] = useState<mcQuestion>({
+    const [mcQuestion, setMcQuestion] = useState<McQuestion>({
         questionNumber: 1,
         isCritical: false,
         prompt: "",

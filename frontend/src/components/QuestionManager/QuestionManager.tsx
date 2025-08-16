@@ -55,11 +55,6 @@ const QuestionManager = () => {
             setTotalPages(dataResponse.totalPages);
             setTotalMcQuestions(dataResponse.totalElements);
             setPage(dataResponse.number); // hoặc pageParam
-
-            // setMcQuestionList(data.content);
-            // setTotalPages(data.totalPages);
-            // setTotalMcQuestions(data.totalElements);
-            // setPage(data.number); // hoặc pageParam
         } catch (error) {
             console.error("Lỗi gọi API:", error);
         }

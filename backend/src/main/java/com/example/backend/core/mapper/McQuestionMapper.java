@@ -45,4 +45,8 @@ public class McQuestionMapper {
         res.setChoices(choiceList);
         return res;
     }
+
+    public static List<McQuestionRes> toMcQuestionResList(List<McQuestion> mcQuestionList) {
+        return mcQuestionList.stream().map(McQuestionMapper::toMcQuestionRes).collect(Collectors.toList());
+    }
 }

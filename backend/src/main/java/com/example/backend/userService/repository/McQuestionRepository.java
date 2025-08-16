@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface McQuestionRepository extends JpaRepository<McQuestion, String> {
     @Query("""
@@ -25,4 +27,28 @@ public interface McQuestionRepository extends JpaRepository<McQuestion, String> 
 
     @Query("SELECT MAX(q.questionNumber) FROM McQuestion q")
     Integer findMaxQuestionNumber();
+
+    @Query(value = """
+        SELECT * FROM mc_question 
+        WHERE type = :type 
+          AND (:critical IS NULL OR is_critical = :critical)
+        ORDER BY RAND()
+        """,
+            nativeQuery = true)
+    List<McQuestion> findRandomByTypeAndCritical(
+            @Param("type") String type,
+            @Param("critical") Boolean critical,
+            Pageable pageable
+    );
+
+    @Query(value = """
+        SELECT * FROM mc_question 
+        WHERE (:critical IS NULL OR is_critical = :critical)
+        ORDER BY RAND()
+        """,
+            nativeQuery = true)
+    List<McQuestion> findRandomByCritical(
+            @Param("critical") Boolean critical,
+            Pageable pageable
+    );
 }

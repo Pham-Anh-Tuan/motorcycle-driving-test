@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import com.example.backend.core.config.ImageConfig;
+import org.springframework.data.domain.PageRequest;
 
 import java.io.IOException;
 import java.util.*;
@@ -169,4 +170,88 @@ public class McQuestionService {
         return ResponseEntity.ok("Đã xóa câu hỏi thành công.");
     }
 
+    public ResponseEntity<?> buildRandomA1Exam() {
+        // Yêu cầu:
+        // 10 Khái niệm & quy tắc (trong đó 1 câu liệt)
+        // 1  Văn hóa & đạo đức
+        // 2  Kỹ thuật lái xe
+        // 9  Biển báo đường bộ
+        // 3  Sa hình
+        // Tổng: 25
+
+        List<McQuestionRes> result = new ArrayList<>();
+
+        // 1) Khái niệm & quy tắc: 1 liệt + 9 thường
+        List<McQuestionRes> conceptCritical = McQuestionMapper.toMcQuestionResList(mcQuestionRepository.findRandomByCritical(
+                true, PageRequest.of(0, 1)));
+        if (conceptCritical.isEmpty()) {
+            throw new IllegalStateException("Không đủ câu liệt cho Khái niệm & Quy tắc.");
+        }
+        result.addAll(conceptCritical);
+
+        List<McQuestionRes> conceptNonCritical = McQuestionMapper.toMcQuestionResList(mcQuestionRepository.findRandomByTypeAndCritical(
+                "Khái niệm và quy tắc", false, PageRequest.of(0, 9)));
+        if (conceptNonCritical.size() < 9) {
+            throw new IllegalStateException("Không đủ câu thường cho Khái niệm & Quy tắc.");
+        }
+        result.addAll(conceptNonCritical);
+
+        Collections.shuffle(result);
+
+        // 2) Văn hóa & đạo đức: 1 câu (thường)
+        List<McQuestionRes> culture = McQuestionMapper.toMcQuestionResList(mcQuestionRepository.findRandomByTypeAndCritical(
+                "Văn hóa và đạo đức lái xe", false, PageRequest.of(0, 1)));
+        if (culture.size() < 1) {
+            throw new IllegalStateException("Không đủ câu Văn hóa & đạo đức.");
+        }
+        result.addAll(culture);
+
+        // 3) Kỹ thuật lái xe: 2 câu
+        List<McQuestionRes> technique = McQuestionMapper.toMcQuestionResList(mcQuestionRepository.findRandomByTypeAndCritical(
+                "Kỹ thuật lái xe", false, PageRequest.of(0, 2)));
+        if (technique.size() < 2) {
+            throw new IllegalStateException("Không đủ câu Kỹ thuật lái xe.");
+        }
+        result.addAll(technique);
+
+        // 4) Biển báo đường bộ: 9 câu
+        List<McQuestionRes> signs = McQuestionMapper.toMcQuestionResList(mcQuestionRepository.findRandomByTypeAndCritical(
+                "Biển báo đường bộ", false, PageRequest.of(0, 9)));
+        if (signs.size() < 9) {
+            throw new IllegalStateException("Không đủ câu Biển báo đường bộ.");
+        }
+        result.addAll(signs);
+
+        // 5) Sa hình: 3 câu
+        List<McQuestionRes> traffic = McQuestionMapper.toMcQuestionResList(mcQuestionRepository.findRandomByTypeAndCritical(
+                "Sa hình", false, PageRequest.of(0, 3)));
+        if (traffic.size() < 3) {
+            throw new IllegalStateException("Không đủ câu Sa hình.");
+        }
+        result.addAll(traffic);
+        resetQuestionNumber(result);
+
+        // Chống trùng lặp (lý thuyết ORDER BY RAND() + LIMIT đã khác nhau; nhưng ta vẫn phòng hờ)
+//        Set<String> uniq = new HashSet<>();
+//        List<McQuestion> deduped = new ArrayList<>();
+//        for (McQuestion q : result) {
+//            if (uniq.add(q.getId())) {
+//                deduped.add(q);
+//            }
+//        }
+//        if (deduped.size() != 25) {
+//            throw new IllegalStateException("Số câu sau loại trùng không đủ 25. Kiểm tra dữ liệu nguồn.");
+//        }
+
+        // Xáo trộn thứ tự câu hỏi trong đề
+//        Collections.shuffle(deduped);
+
+        return ResponseEntity.ok(result);
+    }
+
+    public void resetQuestionNumber(List<McQuestionRes> mcQuestionResList) {
+        for (int i = 0; i < mcQuestionResList.size(); i++) {
+            mcQuestionResList.get(i).setQuestionNumber(i + 1);
+        }
+    }
 }

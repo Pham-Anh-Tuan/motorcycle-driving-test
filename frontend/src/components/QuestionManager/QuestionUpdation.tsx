@@ -10,7 +10,7 @@ interface QuestionUpdationProps {
 }
 
 const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpdation }) => {
-    interface mcQuestion {
+    interface McQuestion {
         id: string;
         questionNumber: number;
         isCritical: boolean;
@@ -29,7 +29,7 @@ const QuestionUpdation: React.FC<QuestionUpdationProps> = ({ updateId, toggleUpd
         content: string;
     }
 
-    const [mcQuestion, setMcQuestion] = useState<mcQuestion>({
+    const [mcQuestion, setMcQuestion] = useState<McQuestion>({
         id: updateId,
         questionNumber: 1,
         isCritical: false,

@@ -53,6 +53,10 @@ public class McQuestionController {
     public ResponseEntity<?> getMcQuestionRes(@PathVariable("id") String id) {
         return mcQuestionService.getMcQuestionRes(id);
     }
+    @GetMapping(path = "/public/build-random-A1-exam")
+    public ResponseEntity<?> buildRandomA1Exam() {
+        return mcQuestionService.buildRandomA1Exam();
+    }
 
     @PostMapping(value = "/admin/createMcQuestion", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createMcQuestion(@ModelAttribute McQuestionReq mcQuestionReq) {
