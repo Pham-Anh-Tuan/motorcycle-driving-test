@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import type { FC } from "react";
 import { mcQuestionApi } from "../../api/api";
+import Result from "../Result/Result";
 
 interface McQuestion {
     id: string;
@@ -21,7 +21,7 @@ interface Choice {
     content: string;
 }
 
-const Exam: FC = () => {
+const Exam = () => {
     const [mcQuestions, setMcQuestions] = useState<McQuestion[]>([]);
 
     const loadMcQuestions = async () => {
@@ -38,6 +38,11 @@ const Exam: FC = () => {
     const currentIndex = mcQuestions.findIndex((q) => q.questionNumber === current);
     const currentQuestion = mcQuestions[currentIndex];
     const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: number | null }>({});
+    const [timeLeft, setTimeLeft] = useState(19 * 60); // 19 phút => giây
+    const [showResult, setShowResult] = useState(false);
+    const toggleResult = () => {
+        setShowResult(!showResult);
+    };
 
     const goToPrevious = () => {
         if (currentIndex > 0) {
@@ -53,17 +58,59 @@ const Exam: FC = () => {
 
     useEffect(() => {
         loadMcQuestions();
+
+        const timer = setInterval(() => {
+            setTimeLeft((prev) => {
+                if (prev <= 1) {
+                    clearInterval(timer); // hết giờ thì dừng
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(timer);
     }, []);
+
+    // Hàm format mm:ss
+    const formatTime = (seconds: number) => {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m}:${s.toString().padStart(2, "0")}`;
+    };
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "ArrowLeft") {
+                goToPrevious();
+            } else if (e.key === "ArrowRight") {
+                goToNext();
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [currentIndex, mcQuestions]);
+
+    const [correctCount, setCorrectCount] = useState<number>(0);
+    const [resultContent, setResultContent] = useState<string>("");
+
+    const getCorrectCount = () => {
+        const re = mcQuestions.filter(
+            (q) => q.answer === selectedAnswers[q.questionNumber]
+        ).length;
+        setCorrectCount(re);
+    }
+
     return (
         <div className="bg-white container">
             <div>
-                <h1 className="text-xl font-bold text-black bg-white p-3 text-center rounded-sm">
-                    ĐỀ THI THỬ BẰNG LÁI XE A1 250 CÂU HỎI MỚI NHẤT 2025
+                <h1 className="text-xl font-bold text-black p-3 text-center rounded-sm bg-yellow-300">
+                    BỘ ĐỀ LUYỆN THI BẰNG LÁI XE MÁY HẠNG A1 | 250 CÂU HỎI MỚI NHẤT 2025
                 </h1>
-
                 <div className="flex flex-col md:flex-row gap-4 mt-4">
-
-
                     {/* Question */}
                     <div className="bg-white border border-gray-200 p-4 rounded-sm shadow w-full md:w-2/3 lg:w-3/4">
                         {currentQuestion && (
@@ -84,21 +131,6 @@ const Exam: FC = () => {
                                     </div>
                                 )}
                                 <div className="space-y-4 my-6">
-                                    {/* {currentQuestion.choices.map((choice, index) => (
-                                        <label key={index} className="block">
-                                            <input type="radio"
-                                                name={`choice-${currentQuestion.questionNumber}`}
-                                                checked={selectedAnswers[currentQuestion.questionNumber] === choice.orderNumber}
-                                                onChange={() =>
-                                                    setSelectedAnswers({
-                                                        ...selectedAnswers,
-                                                        [currentQuestion.questionNumber]: choice.orderNumber,
-                                                    })
-                                                }
-                                                className="mr-2" />
-                                            {choice.orderNumber}. {choice.content}
-                                        </label>
-                                    ))} */}
                                     {currentQuestion.choices.map((choice, index) => (
                                         <div key={index}
                                             onClick={() => {
@@ -107,7 +139,7 @@ const Exam: FC = () => {
                                                     [currentQuestion.questionNumber]: choice.orderNumber,
                                                 })
                                             }}
-                                            className={`cursor-pointer rounded-lg px-4 py-3 border transition
+                                            className={`cursor-pointer rounded-sm px-4 py-3 border transition
                                             ${selectedAnswers[currentQuestion.questionNumber] === choice.orderNumber
                                                     ? "bg-blue-500 text-white border-blue-600 shadow"
                                                     : "bg-gray-100 hover:bg-gray-200 border-gray-300"}
@@ -117,14 +149,21 @@ const Exam: FC = () => {
                                     ))}
                                 </div>
                                 <div className="flex justify-between mt-4">
-                                    <button onClick={goToPrevious}
+                                    <button
+                                        type="button"
+                                        onClick={goToPrevious}
                                         disabled={currentIndex === 0}
-                                        className="border px-4 py-2 rounded hover:bg-gray-100">
+                                        className="border px-4 py-2 rounded-sm bg-gray-50 hover:bg-gray-100 cursor-pointer">
                                         Câu trước
                                     </button>
-                                    <button onClick={goToNext}
+                                    {/* <div className="hidden sm:flex flex-col justify-center">
+                                        <div className="flex flex-col justify-center border border-gray-300 rounded h-full px-8">Bạn có thể sử dụng mũi tên ⬅️ hoặc ➡️ trên bàn phím để thay đổi câu hỏi.</div>
+                                    </div> */}
+                                    <button
+                                        type="button"
+                                        onClick={goToNext}
                                         disabled={currentIndex === mcQuestions.length - 1}
-                                        className="border px-4 py-2 rounded hover:bg-gray-100">
+                                        className="border px-4 py-2 rounded-sm bg-gray-50 hover:bg-gray-100 cursor-pointer">
                                         Câu sau
                                     </button>
                                 </div>
@@ -142,7 +181,7 @@ const Exam: FC = () => {
                                 <button
                                     key={num}
                                     className={`text-black w-11 rounded-full aspect-square ${current === num ? "ring-2 ring-inset ring-blue-500" : selectedAnswers[num]               // câu đã chọn đáp án
-                                        ? "bg-blue-500 text-white" : "bg-gray-300"
+                                        ? "bg-blue-500 text-white" : "bg-gray-200"
                                         }`}
                                     onClick={() => setCurrent(num)}
                                 >
@@ -150,15 +189,25 @@ const Exam: FC = () => {
                                 </button>
                             ))}
                         </div>
-                        <div className="mt-4 border p-2 text-gray-800 font-semibold">
-                            Thời gian còn lại: 13:22
+                        <div className="mt-4 border p-2 text-red-600 font-semibold rounded-sm">
+                            Thời gian còn lại: {formatTime(timeLeft)}
                         </div>
-                        <button className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded">
+                        <button onClick={() => {
+                            toggleResult();
+                            getCorrectCount();
+                        }}
+                            type="button"
+                            className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-sm">
                             KẾT THÚC BÀI THI
                         </button>
                     </div>
                 </div>
             </div>
+            {showResult && (
+                <div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%)] max-h-full bg-black bg-opacity-50">
+                    <Result total={mcQuestions.length} correctCount={correctCount} />
+                </div>
+            )}
         </div>
     );
 };

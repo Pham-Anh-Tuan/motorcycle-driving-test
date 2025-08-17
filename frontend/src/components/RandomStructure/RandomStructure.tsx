@@ -1,13 +1,5 @@
-import { useState } from "react";
 
 const RandomStructure = () => {
-    const [lastResult] = useState({
-        date: "10 ngày trước",
-        status: "KHÔNG ĐẠT",
-        correct: 0,
-        wrong: 25,
-        fail: 1,
-    });
     return (
         <div className="container">
             {/* Tiêu đề */}
