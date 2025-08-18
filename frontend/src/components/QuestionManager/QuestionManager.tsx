@@ -105,7 +105,7 @@ const QuestionManager = () => {
                     <div className="bg-white dark:bg-gray-800 relative shadow-md rounded-sm">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
                             <div className="flex-1 flex flex-col">
-                                <h3 className="text-lg font-bold">
+                                <h3 className="text-lg font-semibold">
                                     Danh sách câu hỏi
                                 </h3>
                                 <span className="dark:text-white text-sm">Tổng số: {totalMcQuestions}</span>

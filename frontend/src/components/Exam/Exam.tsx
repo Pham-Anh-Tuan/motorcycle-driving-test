@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { mcQuestionApi } from "../../api/api";
 import Result from "../Result/Result";
+import type { ResultInterface } from "../../interfaces/Result";
+import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
 
 interface McQuestion {
     id: string;
@@ -42,6 +44,11 @@ const Exam = () => {
     const [showResult, setShowResult] = useState(false);
     const toggleResult = () => {
         setShowResult(!showResult);
+    };
+
+    const [showReview, setShowReview] = useState(false);
+    const toggleReview = () => {
+        setShowReview(!showReview);
     };
 
     const goToPrevious = () => {
@@ -94,15 +101,27 @@ const Exam = () => {
         };
     }, [currentIndex, mcQuestions]);
 
-    const [correctCount, setCorrectCount] = useState<number>(0);
-    const [resultContent, setResultContent] = useState<string>("");
+    const [result, setResult] = useState<ResultInterface>();
 
-    const getCorrectCount = () => {
-        const re = mcQuestions.filter(
+    const getResult = (): ResultInterface => {
+        const correctCount = mcQuestions.filter(
             (q) => q.answer === selectedAnswers[q.questionNumber]
         ).length;
-        setCorrectCount(re);
-    }
+
+        // Kiểm tra có sai câu critical nào không
+        const hasWrongCritical = mcQuestions.some(
+            (q) => q.isCritical && q.answer !== selectedAnswers[q.questionNumber]
+        );
+
+        const isPassed =
+            correctCount >= 21 && !hasWrongCritical ? true : false;
+
+        return {
+            total: mcQuestions.length,
+            correctCount,
+            isPassed,
+        };
+    };
 
     return (
         <div className="bg-white container">
@@ -153,7 +172,8 @@ const Exam = () => {
                                         type="button"
                                         onClick={goToPrevious}
                                         disabled={currentIndex === 0}
-                                        className="border px-4 py-2 rounded-sm bg-gray-50 hover:bg-gray-100 cursor-pointer">
+                                        className="flex items-center gap-0.5 px-2 py-1 rounded-sm hover:bg-blue-100 cursor-pointer border-2 border-b-4 border-blue-400 text-sm">
+                                        <ArrowLeft className="w-5 h-5 text-sm" />
                                         Câu trước
                                     </button>
                                     {/* <div className="hidden sm:flex flex-col justify-center">
@@ -163,10 +183,22 @@ const Exam = () => {
                                         type="button"
                                         onClick={goToNext}
                                         disabled={currentIndex === mcQuestions.length - 1}
-                                        className="border px-4 py-2 rounded-sm bg-gray-50 hover:bg-gray-100 cursor-pointer">
+                                        className="flex items-center gap-0.5 px-2 py-1 rounded-sm hover:bg-blue-100 cursor-pointer border-2 border-b-4 border-blue-400 text-sm">
                                         Câu sau
+                                        <ArrowRight className="w-5 h-5 text-sm" />
                                     </button>
                                 </div>
+
+                                {showReview && (
+                                    <div>
+                                        <div className="mt-4 text-yellow-400 font-semibold">ĐÁP ÁN ĐÚNG: {currentQuestion.answer} </div>
+
+                                        <div className="mt-4 bg-green-300 rounded-sm p-2">
+                                            <span className="font-medium">💡 GIẢI THÍCH ĐÁP ÁN: </span>
+                                            <p> {currentQuestion.explanation} </p>
+                                        </div>
+                                    </div>
+                                )}
                             </>
                         )}
                     </div>
@@ -180,12 +212,24 @@ const Exam = () => {
                             {Array.from({ length: 25 }, (_, i) => i + 1).map((num) => (
                                 <button
                                     key={num}
-                                    className={`text-black w-11 rounded-full aspect-square ${current === num ? "ring-2 ring-inset ring-blue-500" : selectedAnswers[num]               // câu đã chọn đáp án
+                                    className={`relative text-black w-11 rounded-full aspect-square ${current === num ? "ring-2 ring-inset ring-blue-500" : selectedAnswers[num]               // câu đã chọn đáp án
                                         ? "bg-blue-500 text-white" : "bg-gray-200"
                                         }`}
                                     onClick={() => setCurrent(num)}
                                 >
                                     {num}
+
+                                    {showReview && (
+                                        selectedAnswers[currentQuestion.questionNumber] === currentQuestion.answer ? (
+                                            <div className="absolute -top-0 -right-0 flex items-center justify-center w-3.5 h-3.5 p-0.5 border border-white bg-green-500 rounded-full text-white shadow">
+                                                <Check size={18} strokeWidth={3} />
+                                            </div>
+                                        ) : (
+                                            <div className="absolute -top-0 -right-0 flex items-center justify-center w-3.5 h-3.5 p-0.5 border border-white bg-red-500 rounded-full text-white shadow">
+                                                <X size={18} strokeWidth={3} />
+                                            </div>
+                                        )
+                                    )}
                                 </button>
                             ))}
                         </div>
@@ -194,7 +238,7 @@ const Exam = () => {
                         </div>
                         <button onClick={() => {
                             toggleResult();
-                            getCorrectCount();
+                            setResult(getResult());
                         }}
                             type="button"
                             className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-sm">
@@ -205,7 +249,7 @@ const Exam = () => {
             </div>
             {showResult && (
                 <div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%)] max-h-full bg-black bg-opacity-50">
-                    <Result total={mcQuestions.length} correctCount={correctCount} />
+                    <Result result={result} toggleResult={toggleResult} toggleReview={toggleReview} />
                 </div>
             )}
         </div>
