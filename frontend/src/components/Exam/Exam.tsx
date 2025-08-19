@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { mcQuestionApi } from "../../api/api";
 import Result from "../Result/Result";
 import type { ResultInterface } from "../../interfaces/Result";
-import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
+import { Check, X } from "lucide-react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import Confirm from "../Confirm/Confirm";
 
 interface McQuestion {
     id: string;
@@ -40,16 +42,17 @@ const Exam = () => {
     const currentIndex = mcQuestions.findIndex((q) => q.questionNumber === current);
     const currentQuestion = mcQuestions[currentIndex];
     const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: number | null }>({});
-    const [timeLeft, setTimeLeft] = useState(19 * 60); // 19 phút => giây
+    // const [timeLeft, setTimeLeft] = useState(19 * 60); // 19 phút => giây
+    const [timeLeft, setTimeLeft] = useState(5);
     const [showResult, setShowResult] = useState(false);
     const toggleResult = () => {
+        setShowConfirm(false);
         setShowResult(!showResult);
     };
 
+    const [showConfirm, setShowConfirm] = useState(false);
+
     const [showReview, setShowReview] = useState(false);
-    const toggleReview = () => {
-        setShowReview(!showReview);
-    };
 
     const goToPrevious = () => {
         if (currentIndex > 0) {
@@ -70,6 +73,9 @@ const Exam = () => {
             setTimeLeft((prev) => {
                 if (prev <= 1) {
                     clearInterval(timer); // hết giờ thì dừng
+
+                    setResult(getResult());
+                    setShowResult(true);
                     return 0;
                 }
                 return prev - 1;
@@ -136,6 +142,11 @@ const Exam = () => {
                             <>
                                 <h1 className="text-black font-semibold mb-1 text-xl">
                                     Câu {currentQuestion.questionNumber}:
+                                    {showReview && (
+                                        currentQuestion.isCritical && (
+                                            <span className="text-red-500"> [Câu liệt] </span>
+                                        )
+                                    )}
                                     <span className="text-black font-semibold ml-1">
                                         {currentQuestion.prompt}
                                     </span>
@@ -172,8 +183,8 @@ const Exam = () => {
                                         type="button"
                                         onClick={goToPrevious}
                                         disabled={currentIndex === 0}
-                                        className="flex items-center gap-0.5 px-2 py-1 rounded-sm hover:bg-blue-100 cursor-pointer border-2 border-b-4 border-blue-400 text-sm">
-                                        <ArrowLeft className="w-5 h-5 text-sm" />
+                                        className="flex items-center font-semibold gap-0.5 px-2 py-1 rounded-sm hover:bg-blue-100 cursor-pointer border-2 border-b-4 border-blue-400 text-sm">
+                                        <FaChevronLeft />
                                         Câu trước
                                     </button>
                                     {/* <div className="hidden sm:flex flex-col justify-center">
@@ -183,15 +194,23 @@ const Exam = () => {
                                         type="button"
                                         onClick={goToNext}
                                         disabled={currentIndex === mcQuestions.length - 1}
-                                        className="flex items-center gap-0.5 px-2 py-1 rounded-sm hover:bg-blue-100 cursor-pointer border-2 border-b-4 border-blue-400 text-sm">
+                                        className="flex items-center font-semibold gap-0.5 px-2 py-1 rounded-sm hover:bg-blue-100 cursor-pointer border-2 border-b-4 border-blue-400 text-sm">
                                         Câu sau
-                                        <ArrowRight className="w-5 h-5 text-sm" />
+                                        <FaChevronRight />
                                     </button>
                                 </div>
 
                                 {showReview && (
                                     <div>
-                                        <div className="mt-4 text-yellow-400 font-semibold">ĐÁP ÁN ĐÚNG: {currentQuestion.answer} </div>
+                                        {selectedAnswers[currentQuestion.questionNumber] == null ? (
+                                            <div className="mt-4 text-red-400 font-semibold">CHƯA TRẢ LỜI ❌</div>
+                                        ) : selectedAnswers[currentQuestion.questionNumber] === currentQuestion.answer ? (
+                                            <div className="flex flex-row mt-4 text-green-400 font-semibold">TRẢ LỜI ĐÚNG ✅</div>
+                                        ) : (
+                                            <div className="mt-4 text-red-400 font-semibold">TRẢ LỜI SAI ❌</div>
+                                        )}
+
+                                        <div className="mt-1 text-yellow-400 font-semibold">ĐÁP ÁN ĐÚNG: {currentQuestion.answer} </div>
 
                                         <div className="mt-4 bg-green-300 rounded-sm p-2">
                                             <span className="font-medium">💡 GIẢI THÍCH ĐÁP ÁN: </span>
@@ -220,7 +239,7 @@ const Exam = () => {
                                     {num}
 
                                     {showReview && (
-                                        selectedAnswers[currentQuestion.questionNumber] === currentQuestion.answer ? (
+                                        selectedAnswers[mcQuestions[num - 1].questionNumber] === mcQuestions[num - 1].answer ? (
                                             <div className="absolute -top-0 -right-0 flex items-center justify-center w-3.5 h-3.5 p-0.5 border border-white bg-green-500 rounded-full text-white shadow">
                                                 <Check size={18} strokeWidth={3} />
                                             </div>
@@ -237,7 +256,7 @@ const Exam = () => {
                             Thời gian còn lại: {formatTime(timeLeft)}
                         </div>
                         <button onClick={() => {
-                            toggleResult();
+                            setShowConfirm(true);
                             setResult(getResult());
                         }}
                             type="button"
@@ -247,9 +266,16 @@ const Exam = () => {
                     </div>
                 </div>
             </div>
+            {showConfirm && (
+                <Confirm
+                    toggleResult={toggleResult}
+                    onCancel={() => setShowConfirm(false)}
+                />
+            )}
+
             {showResult && (
                 <div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%)] max-h-full bg-black bg-opacity-50">
-                    <Result result={result} toggleResult={toggleResult} toggleReview={toggleReview} />
+                    <Result result={result} toggleResult={toggleResult} setShowReview={setShowReview} />
                 </div>
             )}
         </div>

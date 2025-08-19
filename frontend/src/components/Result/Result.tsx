@@ -3,10 +3,10 @@ import type { ResultInterface } from "../../interfaces/Result";
 interface ResultProps {
     result?: ResultInterface;
     toggleResult: () => void;
-    toggleReview: () => void;
+    setShowReview: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Result: React.FC<ResultProps> = ({ result, toggleResult, toggleReview}) => {
+const Result: React.FC<ResultProps> = ({ result, toggleResult, setShowReview}) => {
     return (
         <div className="container mx-auto p-6">
             <div className="bg-white rounded-sm shadow-xl p-8 text-center">
@@ -59,7 +59,7 @@ const Result: React.FC<ResultProps> = ({ result, toggleResult, toggleReview}) =>
                         <button
                             onClick={() => {
                                 toggleResult();
-                                toggleReview();
+                                setShowReview(true);
                             }}
                             className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl shadow"
                         >
