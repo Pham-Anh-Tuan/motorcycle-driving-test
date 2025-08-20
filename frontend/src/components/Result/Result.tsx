@@ -12,14 +12,14 @@ const Result: React.FC<ResultProps> = ({ result, toggleResult, setShowReview}) =
             <div className="bg-white rounded-sm shadow-xl p-8 text-center">
                 <div className="relative flex justify-center items-center">
                     <h1 className="text-2xl font-bold text-green-600 text-center">KẾT QUẢ BÀI THI</h1>
-                    <button onClick={toggleResult}
+                    {/* <button onClick={toggleResult}
                         type="button" className=
                         "absolute right-0 text-gray-400 bg-transparent hover:text-gray-900 text-sm inline-flex items-center">
                         <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                         </svg>
                         <span className="sr-only">Close modal</span>
-                    </button>
+                    </button> */}
                 </div>
 
                 {result?.isPassed ? (
@@ -53,7 +53,7 @@ const Result: React.FC<ResultProps> = ({ result, toggleResult, setShowReview}) =
                             onClick={() => window.location.reload()}
                             className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl shadow"
                         >
-                            Thi lại đề khác
+                            Thi đề khác
                         </button>
 
                         <button

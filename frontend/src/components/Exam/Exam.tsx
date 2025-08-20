@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { mcQuestionApi } from "../../api/api";
 import Result from "../Result/Result";
 import type { ResultInterface } from "../../interfaces/Result";
 import { Check, X } from "lucide-react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import Confirm from "../Confirm/Confirm";
+import Timeout from "../Timeout/Timeout";
 
 interface McQuestion {
     id: string;
@@ -37,20 +38,27 @@ const Exam = () => {
         }
     };
 
+    useEffect(() => {
+        loadMcQuestions();
+    }, []);
 
     const [current, setCurrent] = useState<number>(1);
     const currentIndex = mcQuestions.findIndex((q) => q.questionNumber === current);
     const currentQuestion = mcQuestions[currentIndex];
     const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: number | null }>({});
-    // const [timeLeft, setTimeLeft] = useState(19 * 60); // 19 phút => giây
-    const [timeLeft, setTimeLeft] = useState(5);
+    const [timeLeft, setTimeLeft] = useState(19 * 60); // 19 phút => giây
+    // const [timeLeft, setTimeLeft] = useState(6);
+
     const [showResult, setShowResult] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [showTimeout, setShowTimeout] = useState(false);
+
     const toggleResult = () => {
+        setShowTimeout(false);
         setShowConfirm(false);
+        setResult(getResult());
         setShowResult(!showResult);
     };
-
-    const [showConfirm, setShowConfirm] = useState(false);
 
     const [showReview, setShowReview] = useState(false);
 
@@ -66,24 +74,42 @@ const Exam = () => {
         }
     };
 
+    const [isRunning, setIsRunning] = useState(true);
+    const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
     useEffect(() => {
-        loadMcQuestions();
+        if (isRunning) {
+            timerRef.current = setInterval(() => {
+                setTimeLeft((prev) => {
+                    if (prev <= 1) {
+                        clearInterval(timerRef.current!);
+                        setShowTimeout(true);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+        }
 
-        const timer = setInterval(() => {
-            setTimeLeft((prev) => {
-                if (prev <= 1) {
-                    clearInterval(timer); // hết giờ thì dừng
+        // cleanup khi dừng hoặc unmount
+        return () => {
+            if (timerRef.current) clearInterval(timerRef.current);
+        };
+    }, [isRunning]); // khi isRunning thay đổi thì chạy lại
 
-                    setResult(getResult());
-                    setShowResult(true);
-                    return 0;
-                }
-                return prev - 1;
-            });
-        }, 1000);
-
-        return () => clearInterval(timer);
-    }, []);
+    // const toggleTimer = () => {
+    //     setIsRunning((prev) => !prev);
+    // };
+    const handleStart = () => setIsRunning(true);
+    const handlePause = () => {
+        setIsRunning(false);
+        if (timerRef.current) clearInterval(timerRef.current);
+    };
+    const handleReset = () => {
+        setIsRunning(false);
+        if (timerRef.current) clearInterval(timerRef.current);
+        setTimeLeft(10); // reset về 10s
+    };
 
     // Hàm format mm:ss
     const formatTime = (seconds: number) => {
@@ -257,6 +283,7 @@ const Exam = () => {
                         </div>
                         <button onClick={() => {
                             setShowConfirm(true);
+                            handlePause();
                             setResult(getResult());
                         }}
                             type="button"
@@ -269,13 +296,22 @@ const Exam = () => {
             {showConfirm && (
                 <Confirm
                     toggleResult={toggleResult}
-                    onCancel={() => setShowConfirm(false)}
+                    onCancel={() => {
+                        handleStart();
+                        setShowConfirm(false)
+                    }}
                 />
             )}
 
             {showResult && (
                 <div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%)] max-h-full bg-black bg-opacity-50">
                     <Result result={result} toggleResult={toggleResult} setShowReview={setShowReview} />
+                </div>
+            )}
+
+            {showTimeout && !showResult && (
+                <div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%)] max-h-full bg-black bg-opacity-50">
+                    <Timeout toggleResult={toggleResult} />
                 </div>
             )}
         </div>

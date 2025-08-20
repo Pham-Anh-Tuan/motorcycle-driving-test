@@ -4,6 +4,7 @@ import MenuBox from "../components/MenuBox/MenuBox";
 import Exam from "../components/Exam/Exam";
 import AdminDashboard from "../pages/AdminDashboard";
 import RandomStructure from "../components/RandomStructure/RandomStructure";
+import Sections from "../components/Sections/Sections";
 
 const AppRoutes = () => {
     return (
@@ -15,6 +16,7 @@ const AppRoutes = () => {
                     </>} />
                     <Route path="cau-truc-thi-ngau-nhien" element={<RandomStructure/>} />
                     <Route path="de-ngau-nhien" element={<Exam />} />
+                    <Route path="on-cac-chuong" element={<Sections />} />
                 </Route>
 
                 <Route path="/quan-tri" element={<AdminDashboard />} />
