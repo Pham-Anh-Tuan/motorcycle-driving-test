@@ -53,9 +53,15 @@ public class McQuestionController {
     public ResponseEntity<?> getMcQuestionRes(@PathVariable("id") String id) {
         return mcQuestionService.getMcQuestionRes(id);
     }
+
     @GetMapping(path = "/public/build-random-A1-exam")
     public ResponseEntity<?> buildRandomA1Exam() {
         return mcQuestionService.buildRandomA1Exam();
+    }
+
+    @GetMapping(path = "/public/mcQuestion-type/{type}")
+    public ResponseEntity<?> getMcQuestionsByType(@PathVariable("type") String type) {
+        return mcQuestionService.getMcQuestionListByType(type);
     }
 
     @PostMapping(value = "/admin/createMcQuestion", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

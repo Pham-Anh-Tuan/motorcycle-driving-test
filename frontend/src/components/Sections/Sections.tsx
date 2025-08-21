@@ -1,91 +1,69 @@
 // src/App.tsx
 import type { ReactNode } from "react";
-import anh1 from "../../assets/KHÁI NIỆM VÀ QUY TẮC.png";
-import anh2 from "../../assets/VĂN HOÁ VÀ ĐẠO ĐỨC LÁI.png";
-import anh3 from "../../assets/KỸ THUẬT LÁI XE.png";
-import anh4 from "../../assets/BIỂN BÁO ĐƯỜNG BỘ.png";
-import anh5 from "../../assets/SA HÌNH.jpg";
-import anh6 from "../../assets/20 CÂU HỎI ĐIỂM LIỆT.png";
+import khainiemImg from "../../assets/KHÁI NIỆM VÀ QUY TẮC.png";
+import vanhoaImg from "../../assets/VĂN HOÁ VÀ ĐẠO ĐỨC LÁI.png";
+import kyThuatImg from "../../assets/KỸ THUẬT LÁI XE.png";
+import bienbaoImg from "../../assets/BIỂN BÁO ĐƯỜNG BỘ.png";
+import sahinhImg from "../../assets/SA HÌNH.jpg";
 
 interface Section {
     title: string;
     subtitle: string;
     progress: number;
     total: number;
+    link: string;
     icon: ReactNode;
 }
 
-const sections: Section[] = [
+const sectionList: Section[] = [
     {
-        title: "20 CÂU HỎI ĐIỂM LIỆT",
-        subtitle: "20 câu hỏi điểm liệt",
-        progress: 1,
-        total: 20,
-        icon: (
-            // <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            //     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6l4 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            // </svg>
-            <img src={anh6} alt="" />
-        ),
-    },
-    {
-        title: "KHÁI NIỆM VÀ QUY TẮC",
-        subtitle: "Gồm 83 câu hỏi (18 câu điểm liệt)",
+        title: "CHƯƠNG 1: KHÁI NIỆM VÀ QUY TẮC",
+        subtitle: "Gồm 100 câu hỏi (20 câu điểm liệt)",
         progress: 3,
-        total: 83,
+        total: 100,
+        link: "khai-niem-va-quy-tac",
         icon: (
-            // <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            //     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 20h9M12 4H3m9 16V4m0 0l-9 9m9-9l9 9" />
-            // </svg>
-            <img src={anh1} alt="" />
+            <img src={khainiemImg} alt="" />
         ),
     },
     {
-        title: "VĂN HOÁ VÀ ĐẠO ĐỨC LÁI",
-        subtitle: "Gồm 5 câu hỏi",
+        title: "CHƯƠNG 2: VĂN HOÁ VÀ ĐẠO ĐỨC LÁI XE",
+        subtitle: "Gồm 10 câu hỏi",
         progress: 0,
-        total: 5,
+        total: 10,
+        link: "van-hoa-va-dao-duc-lai-xe",
         icon: (
-            // <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            //     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5V4H2v16h5m10-6l-4-4m0 0l-4 4m4-4v12" />
-            // </svg>
-            <img src={anh2} alt="" />
+            <img src={vanhoaImg} alt="" />
         ),
     },
     {
-        title: "KỸ THUẬT LÁI XE",
-        subtitle: "Gồm 12 câu hỏi (2 câu điểm liệt)",
+        title: "CHƯƠNG 3: KỸ THUẬT LÁI XE",
+        subtitle: "Gồm 15 câu hỏi",
         progress: 0,
-        total: 12,
+        total: 15,
+        link: "ky-thuat-lai-xe",
         icon: (
-            // <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            //     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 13h2l2-2h10l2 2h2M5 13v6h14v-6M9 21h6" />
-            // </svg>
-            <img src={anh3} alt="" />
+            <img src={kyThuatImg} alt="" />
         ),
     },
     {
-        title: "BIỂN BÁO ĐƯỜNG BỘ",
-        subtitle: "Gồm 65 câu hỏi",
+        title: "CHƯƠNG 4: BIỂN BÁO ĐƯỜNG BỘ",
+        subtitle: "Gồm 90 câu hỏi",
         progress: 0,
-        total: 65,
+        total: 90,
+        link: "bien-bao-duong-bo",
         icon: (
-            // <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            //     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            // </svg>
-            <img src={anh4} alt="" />
+            <img src={bienbaoImg} alt="" />
         ),
     },
     {
-        title: "SA HÌNH",
+        title: "CHƯƠNG 5: SA HÌNH",
         subtitle: "Gồm 35 câu hỏi",
         progress: 0,
         total: 35,
+        link: "sa-hinh",
         icon: (
-            // <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            //     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7h18M3 12h18M3 17h18" />
-            // </svg>
-            <img src={anh5} alt="" />
+            <img src={sahinhImg} alt="" />
         ),
     },
 ];
@@ -94,9 +72,9 @@ function Card({ data }: { data: Section }) {
     const percentage = (data.progress / data.total) * 100;
 
     return (
-        <div className="flex items-center gap-3 bg-white p-3 rounded-xl shadow mb-3 cursor-pointer">
+        <a href={data.link} className="flex items-center gap-3 bg-white p-3 rounded-xl shadow mb-3 cursor-pointer">
             {/* Icon minh hoạ */}
-            <div className="w-16 h-16 flex items-center justify-center">
+            <div className="w-20 h-20 flex items-center justify-center">
                 {data.icon}
             </div>
 
@@ -118,7 +96,7 @@ function Card({ data }: { data: Section }) {
                     </p>
                 </div>
             </div>
-        </div>
+        </a>
     );
 }
 
@@ -126,7 +104,7 @@ function Sections() {
     return (
         <div className="container">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {sections.map((s, idx) => (
+                {sectionList.map((s, idx) => (
                     <Card key={idx} data={s} />
                 ))}
             </div>

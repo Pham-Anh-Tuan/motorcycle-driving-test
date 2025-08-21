@@ -51,4 +51,6 @@ public interface McQuestionRepository extends JpaRepository<McQuestion, String> 
             @Param("critical") Boolean critical,
             Pageable pageable
     );
+
+    List<McQuestion> findAllByTypeOrderByQuestionNumberAsc(String type);
 }

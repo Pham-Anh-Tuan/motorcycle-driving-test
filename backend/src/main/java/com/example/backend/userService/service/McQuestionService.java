@@ -171,14 +171,6 @@ public class McQuestionService {
     }
 
     public ResponseEntity<?> buildRandomA1Exam() {
-        // Yêu cầu:
-        // 10 Khái niệm & quy tắc (trong đó 1 câu liệt)
-        // 1  Văn hóa & đạo đức
-        // 2  Kỹ thuật lái xe
-        // 9  Biển báo đường bộ
-        // 3  Sa hình
-        // Tổng: 25
-
         List<McQuestionRes> result = new ArrayList<>();
 
         // 1) Khái niệm & quy tắc: 1 liệt + 9 thường
@@ -230,23 +222,12 @@ public class McQuestionService {
         }
         result.addAll(traffic);
         resetQuestionNumber(result);
-
-        // Chống trùng lặp (lý thuyết ORDER BY RAND() + LIMIT đã khác nhau; nhưng ta vẫn phòng hờ)
-//        Set<String> uniq = new HashSet<>();
-//        List<McQuestion> deduped = new ArrayList<>();
-//        for (McQuestion q : result) {
-//            if (uniq.add(q.getId())) {
-//                deduped.add(q);
-//            }
-//        }
-//        if (deduped.size() != 25) {
-//            throw new IllegalStateException("Số câu sau loại trùng không đủ 25. Kiểm tra dữ liệu nguồn.");
-//        }
-
-        // Xáo trộn thứ tự câu hỏi trong đề
-//        Collections.shuffle(deduped);
-
         return ResponseEntity.ok(result);
+    }
+
+    public ResponseEntity<?> getMcQuestionListByType(String type) {
+        List<McQuestion> mcQuestionList = mcQuestionRepository.findAllByTypeOrderByQuestionNumberAsc(type);
+        return ResponseEntity.ok(McQuestionMapper.toMcQuestionResList(mcQuestionList));
     }
 
     public void resetQuestionNumber(List<McQuestionRes> mcQuestionResList) {

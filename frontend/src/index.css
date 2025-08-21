@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Tùy chỉnh thanh scrollbar */
+::-webkit-scrollbar {
+    width: 8px;               /* Độ rộng thanh cuộn dọc */
+    height: 8px;              /* Độ cao thanh cuộn ngang */
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;      /* màu nền track */
+    border-radius: 9999px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #2e3b4b;      /* màu thanh kéo (blue-400 của Tailwind) */
+    border-radius: 9999px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2e3b4b;      /* hover sang blue-600 */
+  }

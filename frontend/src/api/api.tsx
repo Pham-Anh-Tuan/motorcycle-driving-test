@@ -35,6 +35,10 @@ export const mcQuestionApi = {
         return axiosJson.get(`/public/build-random-A1-exam`);
     },
 
+    getMcQuestionsByType(type: string) {
+        return axiosJson.get(`/public/mcQuestion-type/` + type);
+    },
+
     createMcQuestion(formData: FormData) {
         return axiosMultipart.post(`/admin/createMcQuestion`, formData);
     },
