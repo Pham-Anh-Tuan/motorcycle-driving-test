@@ -39,6 +39,11 @@ public class McQuestionController {
         return mcQuestionService.getManagerCriticalMcQuestions(pageable);
     }
 
+    @GetMapping(path = "/public/critical-questions")
+    public ResponseEntity<?> getCriticalMcQuestions() {
+        return ResponseEntity.ok(mcQuestionService.getCriticalMcQuestions(true));
+    }
+
     @GetMapping(path = "/admin/searchManagerMcQuestions")
     public Map<String, Object> searchManagerMcQuestions(
             @RequestParam(defaultValue = "") String keyword,

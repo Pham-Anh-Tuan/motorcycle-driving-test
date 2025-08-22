@@ -19,6 +19,10 @@ export const mcQuestionApi = {
         return axiosJson.get(`/admin/managerCriticalMcQuestions`, { params });
     },
 
+    getCriticalMcQuestions() {
+        return axiosJson.get(`public/critical-questions`);
+    },
+
     searchManagerMcQuestions(keyword: string, page: number, size: number) {
         const params = new URLSearchParams();
         params.append("keyword", keyword);

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { mcQuestionApi } from "../../api/api";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { Check, X } from "lucide-react";
-import { useLocation } from "react-router-dom";
 
 interface McQuestion {
     id: string;
@@ -23,50 +22,13 @@ interface Choice {
     content: string;
 }
 
-const Review = () => {
-    const [category, setCategory] = useState<string>("");
-    const location = useLocation();
-
-    const getTypesFromPath = (path: string): string => {
-        switch (path) {
-            case "/khai-niem-va-quy-tac":
-                setCategory("Chương 1: Khái niệm và quy tắc")
-                return "Khái niệm và quy tắc";
-            case "/van-hoa-va-dao-duc-lai-xe":
-                setCategory("Chương 2: Văn hóa và đạo đức lái xe")
-                return "Văn hóa và đạo đức lái xe";
-            case "/ky-thuat-lai-xe":
-                setCategory("Chương 3: Kỹ thuật lái xe")
-                return "Kỹ thuật lái xe";
-            case "/bien-bao-duong-bo":
-                setCategory("Chương 4: Biển báo đường bộ")
-                return "Biển báo đường bộ";
-            case "/sa-hinh":
-                setCategory("Chương 5: Sa hình")
-                return "Sa hình";
-            case "/20-cau-diem-liet":
-                setCategory("20 câu điểm liệt")
-                return "20 câu điểm liệt";
-            default:
-                return "";
-        }
-    };
-
+const CriticalQuestion = () => {
     const [mcQuestions, setMcQuestions] = useState<McQuestion[]>([]);
 
     const loadMcQuestions = async () => {
         setMcQuestions([]);
         try {
-            const pathType = getTypesFromPath(location.pathname);
-            let data;
-            if (pathType === "20 câu điểm liệt") {
-                // 🔹 gọi API lấy 20 câu điểm liệt
-                ({ data } = await mcQuestionApi.getCriticalMcQuestions());
-            } else {
-                // 🔹 gọi API lấy câu hỏi theo loại
-                ({ data } = await mcQuestionApi.getMcQuestionsByType(pathType));
-            }
-
+            const { data } = await mcQuestionApi.getCriticalMcQuestions();
             setMcQuestions(data);
 
             if (data.length > 0) {
@@ -79,15 +41,14 @@ const Review = () => {
 
     useEffect(() => {
         loadMcQuestions();
-    }, [location.pathname]);
+    }, []);
 
     const [current, setCurrent] = useState<number>(1);
     const currentIndex = mcQuestions.findIndex((q) => q.questionNumber === current);
     const currentQuestion = mcQuestions[currentIndex];
-
     const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: number }>(() => {
-        const savedAnswers = JSON.parse(localStorage.getItem("answersData") || "{}");
-        return savedAnswers[location.pathname] || {};
+        const saved = localStorage.getItem("selectedAnswers");
+        return saved ? JSON.parse(saved) : {};
     });
 
     const goToPrevious = () => {
@@ -128,21 +89,6 @@ const Review = () => {
         localStorage.setItem("progressData", JSON.stringify(savedProgress));
     }
 
-    function updateAnswers(chapterKey: string, selectedAnswers: { [key: number]: number }) {
-        // Lấy dữ liệu hiện tại từ localStorage
-        const savedAnswers = JSON.parse(localStorage.getItem("answersData") || "{}");
-
-        // Ghi đè tiến độ chương hiện tại
-        savedAnswers[chapterKey] = selectedAnswers;
-
-        // Lưu lại vào localStorage
-        localStorage.setItem("answersData", JSON.stringify(savedAnswers));
-    }
-
-    useEffect(() => {
-        updateAnswers(location.pathname, selectedAnswers);
-    }, [selectedAnswers, location.pathname]);
-
     return (
         <div className="bg-white container">
             <div>
@@ -158,7 +104,7 @@ const Review = () => {
                                     Câu {currentQuestion.questionNumber}:
 
                                     {currentQuestion.isCritical && (
-                                        <span className="text-red-500"> [Câu liệt]</span>
+                                        <span className="text-red-500"> [Câu liệt] </span>
                                     )}
 
                                     <span className="text-black font-semibold ml-1">
@@ -202,8 +148,7 @@ const Review = () => {
 
                                                     setSelectedAnswers(newAnswers);
 
-                                                    // localStorage.setItem("selectedAnswers" + location.pathname, JSON.stringify(newAnswers));
-                                                    updateAnswers(location.pathname, newAnswers);
+                                                    localStorage.setItem("selectedAnswers", JSON.stringify(newAnswers));
 
                                                     // Tính số câu đã làm trong chương hiện tại
                                                     const answeredCount = Object.keys(newAnswers).filter((qNum) => {
@@ -263,7 +208,7 @@ const Review = () => {
                     {/* Sidebar */}
                     <div className="bg-white border border-gray-200 p-4 rounded-sm shadow w-full md:w-1/3 lg:w-1/4">
                         <h2 className="text-black font-bold text-center">
-                            {category}
+                            20 câu điểm liệt
                         </h2>
                         <div className="flex justify-center">
                             <div className="bg-yellow-300 h-[3px] mt-1.5 mb-3 w-3/4"></div>
@@ -300,4 +245,4 @@ const Review = () => {
     )
 }
 
-export default Review;
+export default CriticalQuestion;

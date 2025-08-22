@@ -19,10 +19,10 @@ const navMenus = [
     name: "Liên hệ",
     link: ".#services",
   },
-  {
-    name: "Thực hành",
-    link: "#",
-  },
+  // {
+  //   name: "Thực hành",
+  //   link: "#",
+  // },
 ];
 
 interface NavbarProps {

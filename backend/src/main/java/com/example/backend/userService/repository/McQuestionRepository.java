@@ -53,4 +53,6 @@ public interface McQuestionRepository extends JpaRepository<McQuestion, String> 
     );
 
     List<McQuestion> findAllByTypeOrderByQuestionNumberAsc(String type);
+
+    List<McQuestion> findAllByIsCriticalOrderByQuestionNumberAsc(boolean isCritical);
 }

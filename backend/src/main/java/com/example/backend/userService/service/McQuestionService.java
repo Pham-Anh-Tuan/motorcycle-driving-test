@@ -61,6 +61,10 @@ public class McQuestionService {
         return toPagedResponse(mcQuestionsPage, McQuestionMapper::toManagerMcQuestionResList);
     }
 
+    public List<McQuestionRes> getCriticalMcQuestions(boolean isCritical) {
+        return McQuestionMapper.toMcQuestionResList(mcQuestionRepository.findAllByIsCriticalOrderByQuestionNumberAsc(isCritical));
+    }
+
     public ResponseEntity<?> getMcQuestionRes(String mcQuestionId) {
         Optional<McQuestion> optionalMcQuestion = mcQuestionRepository.findById(mcQuestionId);
         if (optionalMcQuestion.isEmpty()) {

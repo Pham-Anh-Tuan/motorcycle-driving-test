@@ -6,6 +6,7 @@ import AdminDashboard from "../pages/AdminDashboard";
 import RandomStructure from "../components/RandomStructure/RandomStructure";
 import Sections from "../components/Sections/Sections";
 import Review from "../components/Review/Review";
+import Tests from "../components/Tests/Tests";
 
 const AppRoutes = () => {
     return (
@@ -24,6 +25,9 @@ const AppRoutes = () => {
                     <Route path="ky-thuat-lai-xe" element={<Review />} />
                     <Route path="bien-bao-duong-bo" element={<Review />} />
                     <Route path="sa-hinh" element={<Review />} />
+                    <Route path="20-cau-diem-liet" element={<Review />} />
+
+                    <Route path="cac-de-thi" element={<Tests />} />
                 </Route>
 
                 <Route path="/quan-tri" element={<AdminDashboard />} />
