@@ -1,17 +1,17 @@
 import { useState } from "react";
 
-type TestStatus = "paused" | "failed" | "not-started" | "in-progress";
+type ExamStatus = "paused" | "failed" | "not-started" | "in-progress";
 
-interface Test {
+interface ExamStructure {
     id: number;
     title: string;
     total: number;
-    status: TestStatus;
+    status: ExamStatus;
     timeLeft?: string;
     failReason?: string;
 }
 
-const testData: Test[] = [
+const examData: ExamStructure[] = [
     {
         id: 1,
         title: "Đề số 1",
@@ -83,15 +83,15 @@ const testData: Test[] = [
     //     timeLeft: "Thời gian 19 phút",
     // },
 ];
-const Tests = () => {
-    const [exams] = useState(testData);
+const ExamList = () => {
+    const [exams] = useState(examData);
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 container">
             {exams.map((exam) => (
                 <div
                     key={exam.id}
-                    className="bg-white rounded-xl shadow p-4 flex flex-row justify-between items-start items-center"
+                    className="bg-white rounded-xl shadow p-4 flex flex-row justify-between items-start"
                 >
                     {/* Left Info */}
                     <div>
@@ -99,7 +99,7 @@ const Tests = () => {
                         <h2 className="text-lg font-semibold text-gray-800">{exam.title}</h2>
 
                         {exam.status === "paused" && (
-                            <p className="text-sm text-teal-500 mt-1 flex items-center gap-1">
+                            <p className="text-sm text-blue-500 mt-1 flex items-center gap-1">
                                 ⏱ {exam.timeLeft}
                             </p>
                         )}
@@ -111,7 +111,7 @@ const Tests = () => {
                         )}
 
                         {exam.status === "not-started" && (
-                            <p className="text-sm text-teal-500 mt-1 flex items-center gap-1">
+                            <p className="text-sm text-blue-500 mt-1 flex items-center gap-1">
                                 ⏱ {exam.timeLeft}
                             </p>
                         )}
@@ -124,7 +124,7 @@ const Tests = () => {
                                 <span className="text-xs font-semibold text-white bg-orange-400 px-3 py-1 rounded-md">
                                     TẠM DỪNG
                                 </span>
-                                <button className="text-sm font-medium text-teal-500 border border-teal-400 px-3 py-1 rounded-md hover:bg-teal-50">
+                                <button className="text-sm font-medium text-blue-500 border border-blue-400 px-3 py-1 rounded-md hover:bg-blue-50">
                                     Tiếp tục
                                 </button>
                             </>
@@ -137,7 +137,7 @@ const Tests = () => {
                         )}
 
                         {exam.status === "not-started" && (
-                            <button className="text-sm font-medium text-teal-500 border border-teal-400 px-3 py-1 rounded-md hover:bg-teal-50">
+                            <button className="text-sm font-medium text-blue-500 border border-blue-400 px-3 py-1 rounded-md hover:bg-blue-50">
                                 Bắt đầu
                             </button>
                         )}
@@ -148,4 +148,4 @@ const Tests = () => {
     )
 }
 
-export default Tests;
+export default ExamList;

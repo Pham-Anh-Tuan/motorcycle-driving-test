@@ -64,6 +64,12 @@ public class McQuestionController {
         return mcQuestionService.buildRandomA1Exam();
     }
 
+//    @GetMapping(path = "/public/generate_exams")
+//    public ResponseEntity<?> generateExams() {
+//        examService.generateExams();
+//        return ResponseEntity.ok("ok");
+//    }
+
     @GetMapping(path = "/public/mcQuestion-type/{type}")
     public ResponseEntity<?> getMcQuestionsByType(@PathVariable("type") String type) {
         return mcQuestionService.getMcQuestionListByType(type);

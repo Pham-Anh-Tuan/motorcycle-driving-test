@@ -52,7 +52,11 @@ public interface McQuestionRepository extends JpaRepository<McQuestion, String> 
             Pageable pageable
     );
 
+    List<McQuestion> findAllByTypeAndIsCritical(String type, boolean isCritical);
+
     List<McQuestion> findAllByTypeOrderByQuestionNumberAsc(String type);
 
     List<McQuestion> findAllByIsCriticalOrderByQuestionNumberAsc(boolean isCritical);
+
+    List<McQuestion> findByType(String type);
 }

@@ -4,6 +4,7 @@ import com.example.backend.core.mapper.McQuestionMapper;
 import com.example.backend.core.request.ChoiceReq;
 import com.example.backend.core.request.McQuestionReq;
 import com.example.backend.core.response.McQuestionRes;
+import com.example.backend.core.utils.QuestionUtil;
 import com.example.backend.userService.model.Choice;
 import com.example.backend.userService.model.McQuestion;
 import com.example.backend.userService.repository.McQuestionRepository;
@@ -225,18 +226,12 @@ public class McQuestionService {
             throw new IllegalStateException("Không đủ câu Sa hình.");
         }
         result.addAll(traffic);
-        resetQuestionNumber(result);
+        QuestionUtil.resetQuestionNumber(result);
         return ResponseEntity.ok(result);
     }
 
     public ResponseEntity<?> getMcQuestionListByType(String type) {
         List<McQuestion> mcQuestionList = mcQuestionRepository.findAllByTypeOrderByQuestionNumberAsc(type);
         return ResponseEntity.ok(McQuestionMapper.toMcQuestionResList(mcQuestionList));
-    }
-
-    public void resetQuestionNumber(List<McQuestionRes> mcQuestionResList) {
-        for (int i = 0; i < mcQuestionResList.size(); i++) {
-            mcQuestionResList.get(i).setQuestionNumber(i + 1);
-        }
     }
 }

@@ -6,7 +6,7 @@ import AdminDashboard from "../pages/AdminDashboard";
 import RandomStructure from "../components/RandomStructure/RandomStructure";
 import Sections from "../components/Sections/Sections";
 import Review from "../components/Review/Review";
-import Tests from "../components/Tests/Tests";
+import Tests from "../components/ExamList/ExamList";
 
 const AppRoutes = () => {
     return (
