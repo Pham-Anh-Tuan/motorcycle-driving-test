@@ -12,12 +12,18 @@ const AppRoutes = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Home/>}>
+                <Route path="/" element={<Home />}>
                     <Route index element={<>
                         <MenuBox />
                     </>} />
-                    <Route path="cau-truc-thi-ngau-nhien" element={<RandomStructure/>} />
+                    <Route path="cau-truc-thi-ngau-nhien" element={<RandomStructure />} />
                     <Route path="de-ngau-nhien" element={<Exam />} />
+                    <Route path="de/:numberExam" element={
+                        <>
+                            <Exam />
+                        </>}
+                    />
+
                     <Route path="on-cac-chuong" element={<Sections />} />
 
                     <Route path="khai-niem-va-quy-tac" element={<Review />} />

@@ -100,6 +100,7 @@ public class ExamService {
         return examRepository.findAll()
                 .stream()
                 .map(Exam::getExamNumber)
+                .sorted()
                 .collect(Collectors.toList());
     }
 }

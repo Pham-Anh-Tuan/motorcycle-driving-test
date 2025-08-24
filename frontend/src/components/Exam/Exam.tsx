@@ -1,11 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-import { mcQuestionApi } from "../../api/api";
+import { useEffect, useRef, useState, type StyleHTMLAttributes } from "react";
+import { examApi, mcQuestionApi } from "../../api/api";
 import Result from "../Result/Result";
 import type { ResultInterface } from "../../interfaces/Result";
 import { Check, X } from "lucide-react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import Confirm from "../Confirm/Confirm";
 import Timeout from "../Timeout/Timeout";
+import { useParams } from "react-router-dom";
 
 interface McQuestion {
     id: string;
@@ -27,11 +28,36 @@ interface Choice {
 }
 
 const Exam = () => {
-    const [mcQuestions, setMcQuestions] = useState<McQuestion[]>([]);
+    const { numberExam } = useParams<{ numberExam: string }>();
 
+    const [category, setCategory] = useState<string>("");
+    const getTypesFromPath = (path: string) => {
+        if (path === "/de-ngau-nhien") {
+            setCategory("Đề ngẫu nhiên");
+
+        } else if (path.startsWith("/de/") && numberExam) {
+            setCategory("Đề số " + numberExam);
+        }
+    };
+
+    useEffect(() => {
+        getTypesFromPath(location.pathname);
+    }, [location.pathname]);
+
+    const [mcQuestions, setMcQuestions] = useState<McQuestion[]>([]);
     const loadMcQuestions = async () => {
         try {
-            const { data } = await mcQuestionApi.getRandomA1Exam();
+            let data;
+            if (numberExam) {
+                // Nếu có numberExam thì gọi API theo số đề
+                const res = await examApi.getQuestionsByExamNumber(numberExam);
+                data = res.data;
+            } else {
+                // Nếu không có numberExam thì lấy đề ngẫu nhiên
+                const res = await mcQuestionApi.getRandomA1Exam();
+                data = res.data;
+            }
+
             setMcQuestions(data);
         } catch (error) {
             console.error("Lỗi gọi API:", error);
@@ -47,7 +73,6 @@ const Exam = () => {
     const currentQuestion = mcQuestions[currentIndex];
     const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: number | null }>({});
     const [timeLeft, setTimeLeft] = useState(19 * 60); // 19 phút => giây
-    // const [timeLeft, setTimeLeft] = useState(6);
 
     const [showResult, setShowResult] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
@@ -147,6 +172,13 @@ const Exam = () => {
 
         const isPassed =
             correctCount >= 21 && !hasWrongCritical ? true : false;
+
+        // Lưu kết quả của các đề thi   
+        if (numberExam) {
+            const savedResult = JSON.parse(localStorage.getItem("resultData") || "{}");
+            savedResult[numberExam] = isPassed;
+            localStorage.setItem("resultData", JSON.stringify(savedResult));
+        }
 
         return {
             total: mcQuestions.length,
@@ -250,9 +282,12 @@ const Exam = () => {
 
                     {/* Sidebar */}
                     <div className="bg-white border border-gray-200 p-4 rounded-sm shadow w-full md:w-1/3 lg:w-1/4">
-                        <h2 className="text-black font-bold mb-2">
-                            Câu hỏi | Đề ngẫu nhiên
+                        <h2 className="text-black font-bold text-center">
+                            Câu hỏi | {category}
                         </h2>
+                        <div className="flex justify-center">
+                            <div className="bg-yellow-300 h-[3px] mt-1.5 mb-3 w-3/4"></div>
+                        </div>
                         <div className="grid grid-cols-8 md:grid-cols-4 xl:grid-cols-5 gap-2">
                             {Array.from({ length: 25 }, (_, i) => i + 1).map((num) => (
                                 <button
@@ -305,7 +340,7 @@ const Exam = () => {
 
             {showResult && (
                 <div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%)] max-h-full bg-black bg-opacity-50">
-                    <Result result={result} toggleResult={toggleResult} setShowReview={setShowReview} />
+                    <Result result={result} toggleResult={toggleResult} setShowReview={setShowReview} numberExam={numberExam} />
                 </div>
             )}
 

@@ -55,3 +55,13 @@ export const mcQuestionApi = {
         return axiosJson.delete(`/admin/deleteMcQuestion/` + id);
     }
 }
+
+export const examApi = {
+    getExamNumberList() {
+        return axiosJson.get(`/public/exam-number-list`);
+    },
+
+    getQuestionsByExamNumber(examNumber: string) {
+        return axiosJson.get(`/public/questions/` + examNumber);
+    }
+}

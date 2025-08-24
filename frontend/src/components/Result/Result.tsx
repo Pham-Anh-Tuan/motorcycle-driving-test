@@ -4,9 +4,10 @@ interface ResultProps {
     result?: ResultInterface;
     toggleResult: () => void;
     setShowReview: React.Dispatch<React.SetStateAction<boolean>>;
+    numberExam?: string;
 }
 
-const Result: React.FC<ResultProps> = ({ result, toggleResult, setShowReview}) => {
+const Result: React.FC<ResultProps> = ({ result, toggleResult, setShowReview, numberExam }) => {
     return (
         <div className="container mx-auto p-6">
             <div className="bg-white rounded-sm shadow-xl p-8 text-center">
@@ -49,13 +50,14 @@ const Result: React.FC<ResultProps> = ({ result, toggleResult, setShowReview}) =
 
                 <div className="flex mt-8 justify-center">
                     <div className="flex gap-6">
-                        <button
-                            onClick={() => window.location.reload()}
-                            className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl shadow"
-                        >
-                            Thi đề khác
-                        </button>
-
+                        {!numberExam && (
+                            <button
+                                onClick={() => window.location.reload()}
+                                className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl shadow"
+                            >
+                                Thi đề khác
+                            </button>
+                        )}
                         <button
                             onClick={() => {
                                 toggleResult();
