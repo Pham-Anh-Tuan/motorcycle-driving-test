@@ -135,56 +135,49 @@ const ExamList = () => {
                     </div>
 
                     {/* Right Buttons */}
-                    <div className="flex flex-col items-end gap-2 mt-3 sm:mt-0">
-                        {/* {exam.status === "paused" && (
-                            <>
-                                <span className="text-xs font-semibold text-white bg-orange-400 px-3 py-1 rounded-md">
-                                    TẠM DỪNG
-                                </span>
-                                <button className="text-sm font-medium text-blue-500 border border-blue-400 px-3 py-1 rounded-md hover:bg-blue-50">
-                                    Tiếp tục
-                                </button>
-                            </>
-                        )}
-
-                        {exam.status === "failed" && (
-                            <span className="text-xs font-semibold text-white bg-rose-500 px-3 py-1 rounded-md">
-                                KHÔNG ĐẠT
-                            </span>
-                        )}
-
-                        {exam.status === "not-started" && (
-                            <button className="text-sm font-medium text-blue-500 border border-blue-400 px-3 py-1 rounded-md hover:bg-blue-50">
-                                Bắt đầu
-                            </button>
-                        )} */}
+                    <div className="mt-3 sm:mt-0">
                         {
                             (() => {
                                 const savedResult = JSON.parse(localStorage.getItem("resultData") || "{}");
 
                                 if (savedResult[number] === false) {
                                     return (
-                                        <span className="text-xs font-semibold text-white bg-rose-500 px-3 py-1 rounded-md">
-                                            KHÔNG ĐẠT
-                                        </span>
+                                        <div className="flex flex-col gap-2">
+                                            <span className="self-end w-fit text-xs font-semibold text-white bg-rose-500 px-3 py-1 rounded-md">
+                                                KHÔNG ĐẠT
+                                            </span>
+                                            <a href={`/de/${Number(number)}`} className="self-end w-fit text-sm font-medium text-blue-500 border border-blue-400 px-3 py-1 rounded-md hover:bg-blue-50 cursor-pointer">
+                                                Thi lại
+                                            </a>
+                                        </div>
                                     );
                                 }
 
                                 if (savedResult[number] === true) {
                                     return (
-                                        <span className="text-xs font-semibold text-white bg-green-500 px-3 py-1 rounded-md">
-                                            ĐẠT
-                                        </span>
+                                        <div className="flex flex-col gap-2">
+                                            <span className="self-end w-fit text-xs font-semibold text-white bg-green-500 px-3 py-1 rounded-md">
+                                                ĐẠT
+                                            </span>
+                                            <a href={`/de/${Number(number)}`} className="self-end w-fit text-sm font-medium text-blue-500 border border-blue-400 px-3 py-1 rounded-md hover:bg-blue-50 cursor-pointer">
+                                                Thi lại
+                                            </a>
+                                        </div>
                                     );
                                 }
 
-                                return <div></div>;
+                                return <div>
+                                    <span></span>
+                                    <a href={`/de/${Number(number)}`} className="text-sm font-medium text-blue-500 border border-blue-400 px-3 py-1 rounded-md hover:bg-blue-50 cursor-pointer">
+                                        Bắt đầu
+                                    </a>
+                                </div>;
                             })()
                         }
-                        
-                        <a href={`/de/${Number(number)}`} className="text-sm font-medium text-blue-500 border border-blue-400 px-3 py-1 rounded-md hover:bg-blue-50 cursor-pointer">
+
+                        {/* <a href={`/de/${Number(number)}`} className="text-sm font-medium text-blue-500 border border-blue-400 px-3 py-1 rounded-md hover:bg-blue-50 cursor-pointer">
                             Bắt đầu
-                        </a>
+                        </a> */}
                     </div>
                 </div>
             ))}

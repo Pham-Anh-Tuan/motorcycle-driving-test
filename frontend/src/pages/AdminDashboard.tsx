@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Menu, Newspaper, TrafficCone, FileQuestion, LogOut } from "lucide-react";
 import Logo from "../a1Logo.png";
 import QuestionManager from "../components/QuestionManager/QuestionManager";
+import SignManager from "../components/SignManager/SignManager";
 
 const menuItems = [
   { label: "Câu hỏi", icon: FileQuestion },
@@ -20,7 +21,9 @@ const AdminDashboard = () => {
           <QuestionManager />
         </div>;
       case "Biển báo":
-        return <div>Quản lý biển báo (Tiêu đề, hình ảnh, nội dung, loại biển)</div>;
+        return <div>
+          <SignManager />
+        </div>;
       case "Tin tức":
         return <div>Quản lý tin tức (Tiêu đề, ảnh, ngày đăng, nội dung)</div>;
       default:
