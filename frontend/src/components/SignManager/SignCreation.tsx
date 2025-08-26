@@ -1,61 +1,47 @@
 import { useEffect, useRef, useState } from "react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
-import { mcQuestionApi } from "../../api/api";
+import { mcQuestionApi, signApi } from "../../api/api";
 
 interface SignCreationProps {
     toggleCreation: () => void;
 }
 
 const SignCreation: React.FC<SignCreationProps> = ({ toggleCreation }) => {
-    interface McQuestion {
-        questionNumber: number;
-        isCritical: boolean;
-        prompt: string;
+    interface Sign {
+        code: string;
+        title: string;
         imageName?: string;
         imageFile?: File | null;
-        choices: Choice[];
-        answer: number;
-        explanation: string;
-        type: string;
+        description: string;
     }
 
-    interface Choice {
-        orderNumber: number;
-        content: string;
-    }
-
-    const [mcQuestion, setMcQuestion] = useState<McQuestion>({
-        questionNumber: 1,
-        isCritical: false,
-        prompt: "",
+    const [sign, setSign] = useState<Sign>({
+        code: "",
+        title: "",
         imageName: "",
         imageFile: null,
-        choices: [{
-            orderNumber: 1,
-            content: "",
-        }],
-        answer: 1,
-        explanation: "",
-        type: "Khái niệm và quy tắc",
+        description: ""
     });
 
-   
-
-    const setQuestionNumber = (newQuestionNumber: number) => {
-        setMcQuestion((prev) => ({ ...prev, questionNumber: newQuestionNumber, }));
+    const setCode = (code: string) => {
+        setSign(prev => ({ ...prev, code }));
     };
 
-    const setImageName = (newImageName: string) => {
-        setMcQuestion(prev => ({ ...prev, imageName: newImageName }));
+    const setTitle = (title: string) => {
+        setSign(prev => ({ ...prev, title }));
     };
 
-    const setImageFile = (newImageFile: File | null) => {
-        setMcQuestion(prev => ({ ...prev, imageFile: newImageFile }));
+    const setImageName = (imageName: string) => {
+        setSign(prev => ({ ...prev, imageName }));
     };
 
-    const setExplanation = (newExplanation: string) => {
-        setMcQuestion((prev) => ({ ...prev, explanation: newExplanation, }));
+    const setImageFile = (imageFile: File | null) => {
+        setSign(prev => ({ ...prev, imageFile }));
+    };
+
+    const setDescription = (description: string) => {
+        setSign(prev => ({ ...prev, description }));
     };
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -84,43 +70,22 @@ const SignCreation: React.FC<SignCreationProps> = ({ toggleCreation }) => {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData();
-        formData.append("questionNumber", mcQuestion.questionNumber.toString());
-        formData.append("isCritical", mcQuestion.isCritical.toString());
-        formData.append("prompt", mcQuestion.prompt);
+        formData.append("code", sign.code);
+        formData.append("title", sign.title);
 
-        if (mcQuestion.imageFile) {
-            formData.append("imageFile", mcQuestion.imageFile);
+        if (sign.imageFile) {
+            formData.append("imageFile", sign.imageFile);
         }
 
-        mcQuestion.choices.forEach((choice, choiceIndex) => {
-            formData.append(`choices[${choiceIndex}].orderNumber`, choice.orderNumber.toString());
-            formData.append(`choices[${choiceIndex}].content`, choice.content);
-        })
-
-        formData.append("answer", mcQuestion.answer.toString());
-        formData.append("explanation", mcQuestion.explanation);
-        formData.append("type", mcQuestion.type);
+        formData.append("description", sign.description);
 
         try {
-            await mcQuestionApi.createMcQuestion(formData);
+            await signApi.createSign(formData);
         } catch (error: any) {
             console.error("Error saving question:", error);
         }
         window.location.reload();
     }
-
-    const fetchMaxQuestionNumber = async () => {
-        try {
-            const { data } = await mcQuestionApi.getMaxQuestionNumber();
-            setQuestionNumber(data + 1);
-        } catch (error) {
-            console.error("Lỗi khi gọi API question:", error);
-        }
-    };
-
-    useEffect(() => {
-        fetchMaxQuestionNumber();
-    }, []);
 
     return (
         <div className="relative p-4 w-full max-w-2xl max-h-full">
@@ -171,10 +136,10 @@ const SignCreation: React.FC<SignCreationProps> = ({ toggleCreation }) => {
                         <div className="mt-1 w-full relative text-center flex items-center justify-center">
                             <img className="max-w-full max-h-[300px]"
                                 src={
-                                    mcQuestion.imageName
-                                        ? mcQuestion.imageName.startsWith('data:image') || mcQuestion.imageName.startsWith('blob:')
-                                            ? mcQuestion.imageName
-                                            : import.meta.env.VITE_API_URL_QUESTION_IMG + mcQuestion.imageName
+                                    sign.imageName
+                                        ? sign.imageName.startsWith('data:image') || sign.imageName.startsWith('blob:')
+                                            ? sign.imageName
+                                            : import.meta.env.VITE_API_URL_QUESTION_IMG + sign.imageName
                                         : '/path/to/default-image.jpg'
                                 }
                             />
@@ -186,9 +151,9 @@ const SignCreation: React.FC<SignCreationProps> = ({ toggleCreation }) => {
 
                     <div className="grid gap-4 mb-4 sm:grid-cols-2">
                         <div className="sm:col-span-2">
-                            <label htmlFor="explanation" className="block mb-2 text-md font-medium text-gray-900 dark:text-white">Chi tiết</label>
-                            <textarea onChange={(e) => setExplanation(e.target.value)}
-                                id="explanation" rows={3} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-sm border border-gray-300 focus:outline-none focus:border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white placeholder-gray-600 placeholder-opacity-40" placeholder="Nhập nội dung chi tiết cho biển báo" required></textarea>
+                            <label htmlFor="description" className="block mb-2 text-md font-medium text-gray-900 dark:text-white">Chi tiết</label>
+                            <textarea onChange={(e) => setDescription(e.target.value)}
+                                id="description" rows={3} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-sm border border-gray-300 focus:outline-none focus:border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white placeholder-gray-600 placeholder-opacity-40" placeholder="Nhập nội dung chi tiết cho biển báo" required></textarea>
                         </div>
                     </div>
 

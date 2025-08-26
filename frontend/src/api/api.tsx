@@ -65,3 +65,16 @@ export const examApi = {
         return axiosJson.get(`/public/questions/` + examNumber);
     }
 }
+
+export const signApi = {
+    getManagerSigns(page: number, size: number) {
+        const params = new URLSearchParams();
+        params.append("page", page.toString());
+        params.append("size", size.toString());
+        return axiosJson.get(`/admin/manager-signs`, { params });
+    },
+
+    createSign(formData: FormData) {
+        return axiosMultipart.post(`/admin/create-sign`, formData);
+    },
+}

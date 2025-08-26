@@ -150,7 +150,7 @@ const SignManager = () => {
                                         <th scope="col" className="px-4 py-4 text-center">Mã biển báo</th>
                                         <th scope="col" className="px-4 py-4 text-center">Ảnh</th>
                                         <th scope="col" className="px-4 py-3 text-center">Tên biển báo</th>
-                                        <th scope="col" className="px-4 py-3 text-center">Chi tiết</th>
+                                        <th scope="col" className="px-4 py-3 text-center">Mô tả</th>
                                         <th scope="col" className="px-4 py-3 text-center">
                                             <span className="sr-only">Actions</span>
                                         </th>
