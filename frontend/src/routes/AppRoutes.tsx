@@ -7,6 +7,8 @@ import RandomStructure from "../components/RandomStructure/RandomStructure";
 import Sections from "../components/Sections/Sections";
 import Review from "../components/Review/Review";
 import Tests from "../components/ExamList/ExamList";
+import QuestionManager from "../components/QuestionManager/QuestionManager";
+import SignManager from "../components/SignManager/SignManager";
 
 const AppRoutes = () => {
     return (
@@ -36,7 +38,11 @@ const AppRoutes = () => {
                     <Route path="cac-de-thi" element={<Tests />} />
                 </Route>
 
-                <Route path="/quan-tri" element={<AdminDashboard />} />
+                <Route path="/" element={<AdminDashboard />}>
+                    <Route index element={<> </>} />
+                    <Route path="/cau-hoi" element={<QuestionManager />} />
+                    <Route path="/bien-bao" element={<SignManager />} />
+                </Route>
             </Routes>
         </Router>
     )

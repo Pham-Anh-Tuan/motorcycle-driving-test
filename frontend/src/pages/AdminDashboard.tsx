@@ -3,11 +3,12 @@ import { Menu, Newspaper, TrafficCone, FileQuestion, LogOut } from "lucide-react
 import Logo from "../a1Logo.png";
 import QuestionManager from "../components/QuestionManager/QuestionManager";
 import SignManager from "../components/SignManager/SignManager";
+import { NavLink, Outlet } from "react-router-dom";
 
 const menuItems = [
-  { label: "Câu hỏi", icon: FileQuestion },
-  { label: "Biển báo", icon: TrafficCone },
-  { label: "Tin tức", icon: Newspaper },
+  { label: "Câu hỏi", icon: FileQuestion, path: "/cau-hoi" },
+  { label: "Biển báo", icon: TrafficCone, path: "/bien-bao" },
+  { label: "Tin tức", icon: Newspaper, path: "/tin-tuc" },
 ];
 
 const AdminDashboard = () => {
@@ -65,17 +66,17 @@ const AdminDashboard = () => {
           </button>
         </div>
         <nav className="mt-10 space-y-4">
-          {menuItems.map(({ label, icon: Icon }) => (
-            <button
+          {menuItems.map(({ label, icon: Icon, path }) => (
+            <NavLink
               key={label}
-              onClick={() => setActiveTab(label)}
+              to={path}
               className={`flex w-full items-center ${sidebarOpen ? "justify-start px-4" : "justify-center"
                 } py-2 rounded-sm hover:bg-sky-600 transition ${activeTab === label ? "bg-sky-700" : "bg-transparent"
                 }`}
             >
               <Icon className="w-5 h-5" />
               {sidebarOpen && <span className="ml-2">{label}</span>}
-            </button>
+            </NavLink>
 
           ))}
         </nav>
@@ -87,7 +88,8 @@ const AdminDashboard = () => {
         </div>
       </aside>
       <main className="flex-1 p-6 overflow-y-auto ml-16 sm:ml-0">
-        {renderContent()}
+        {/* {renderContent()} */}
+        <Outlet /> {/* Dùng để render nội dung của từng Route */}
       </main>
     </div>
   );

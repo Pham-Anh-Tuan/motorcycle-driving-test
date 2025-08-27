@@ -17,7 +17,12 @@ public class ImageController {
     private ImageService imageService;
 
     @GetMapping("/questionImages/{imageName}")
-    public ResponseEntity<byte[]> getImage(@PathVariable String imageName) throws IOException {
+    public ResponseEntity<byte[]> getQuestionImage(@PathVariable String imageName) throws IOException {
         return imageService.getImage(imageName, "questionImg");
+    }
+
+    @GetMapping("/signImages/{imageName}")
+    public ResponseEntity<byte[]> getSignImage(@PathVariable String imageName) throws IOException {
+        return imageService.getImage(imageName, "signImg");
     }
 }

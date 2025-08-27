@@ -9,4 +9,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SignRepository extends JpaRepository<Sign, String> {
     Page<Sign> findAllByOrderByCreatedAtDesc(Pageable pageable);
+
+    Page<Sign> findByCodeContainingIgnoreCaseOrTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
+            String code, String title, String description, Pageable pageable
+    );
 }

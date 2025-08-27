@@ -74,7 +74,28 @@ export const signApi = {
         return axiosJson.get(`/admin/manager-signs`, { params });
     },
 
+    searchSigns(keyword: string, page: number, size: number) {
+        const params = new URLSearchParams();
+        params.append("keyword", keyword);
+        params.append("page", page.toString());
+        params.append("size", size.toString());
+        return axiosJson.get(`/admin/search-signs`, { params });
+    },
+
+    getSignById(id: string) {
+        return axiosJson.get(`/admin/sign/` + id);
+    },
+
     createSign(formData: FormData) {
         return axiosMultipart.post(`/admin/create-sign`, formData);
     },
+
+    updateSign(formData: FormData) {
+        return axiosMultipart.post(`/admin/update-sign`, formData);
+    },
+
+    deleteSign(id: string) {
+        return axiosJson.delete(`/admin/delete-sign/` + id);
+    }
+
 }

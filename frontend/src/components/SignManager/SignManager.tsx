@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { truncateText } from "../../hooks/TruncateText";
-import { mcQuestionApi } from "../../api/api";
+import { mcQuestionApi, signApi } from "../../api/api";
 import Pagination from "../../hooks/Pagination";
 import SignCreation from "./SignCreation";
+import SignUpdation from "./SignUpdation";
 
 const SignManager = () => {
     const [showCreation, setShowCreation] = useState(false);
@@ -14,46 +15,37 @@ const SignManager = () => {
     const toggleUpdation = () => {
         setShowUpdation(!showUpdation);
     };
-    const [updateId, setUpdateId] = useState<string>("");
 
     const [showDeletion, setShowDeletion] = useState(false);
     const toggleDeletion = () => {
         setShowDeletion(!showDeletion);
     };
+    const [updateId, setUpdateId] = useState<string>("");
     const [deleteId, setDeleteId] = useState<string>("");
 
-    interface McQuestion {
+    interface Sign {
         id: string;
-        questionNumber: number;
-        isCritical: boolean;
-        prompt: string;
-        type: string;
+        code: string;
+        title: string;
+        imageName?: string;
+        imageFile?: File | null;
+        description: string;
     }
 
     const [totalMcQuestions, setTotalMcQuestions] = useState(0);
     const [page, setPage] = useState(0); // Trang hiện tại (bắt đầu từ 0)
     const [totalPages, setTotalPages] = useState(1); // Tổng số trang
-    const [mcQuestionList, setMcQuestionList] = useState<McQuestion[]>([]);
+    const [signList, setSignList] = useState<Sign[]>([]);
 
     const [keyword, setKeyword] = useState("");
 
-    const [displayCritical, setDisplayCritical] = useState(false);
-    const loadMcQuestions = async (pageParam: number, showCritical?: boolean) => {
+    const loadSigns = async (pageParam: number) => {
         try {
-            let dataResponse;
-            const critical = showCritical ?? displayCritical;
-            if (critical) {
-                const { data } = await mcQuestionApi.getManagerCriticalQuestions(pageParam, 15);
-                dataResponse = data;
-            } else {
-                const { data } = await mcQuestionApi.getManagerMcQuestions(pageParam, 15);
-                dataResponse = data;
-            }
-
-            setMcQuestionList(dataResponse.content);
-            setTotalPages(dataResponse.totalPages);
-            setTotalMcQuestions(dataResponse.totalElements);
-            setPage(dataResponse.number); // hoặc pageParam
+            const { data } = await signApi.getManagerSigns(pageParam, 15);
+            setSignList(data.content);
+            setTotalPages(data.totalPages);
+            setTotalMcQuestions(data.totalElements);
+            setPage(data.number); // hoặc pageParam
         } catch (error) {
             console.error("Lỗi gọi API:", error);
         }
@@ -64,35 +56,35 @@ const SignManager = () => {
 
         const searchValue = keywordParam ?? keyword;
         try {
-            const { data } = await mcQuestionApi.searchManagerMcQuestions(searchValue.trim(), pageParam, 15);
-            setMcQuestionList(data.content);
+            const { data } = await signApi.searchSigns(searchValue.trim(), pageParam, 15);
+            setSignList(data.content);
             setTotalPages(data.totalPages);
             setTotalMcQuestions(data.totalElements);
             setPage(data.number);
         } catch (err) {
-            console.error("Lỗi khi tìm sản phẩm:", err);
+            console.error("Lỗi khi tìm biển báo:", err);
         }
     };
 
     useEffect(() => {
-        setMcQuestionList([]);
+        setSignList([]);
         setPage(0); // reset page
-        loadMcQuestions(0); // bắt đầu từ trang 0
+        loadSigns(0); // bắt đầu từ trang 0
     }, []);
 
     useEffect(() => {
         if (keyword.trim() === "") {
-            loadMcQuestions(0);
+            loadSigns(0);
         }
     }, [keyword]);
 
 
     const deleteSign = async () => {
         try {
-            await mcQuestionApi.deleteMcQuestion(deleteId);
+            await signApi.deleteSign(deleteId);
             window.location.reload();
         } catch (error) {
-            console.error("Xóa sản phẩm không thành công!", error);
+            console.error("Xóa biển báo không thành công!", error);
         }
     };
 
@@ -157,24 +149,36 @@ const SignManager = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {mcQuestionList.map((data) => (
-                                        <tr key={data.questionNumber}
+                                    {signList.map((data) => (
+                                        <tr key={data.id}
                                             className="border-b dark:border-gray-700">
-                                            <th scope="row" className={`px-4 py-3 ${data.isCritical ? 'text-red-600' : 'text-black'} text-center whitespace-nowrap font-medium text-gray-900`}>
-                                                {data.questionNumber}
-                                                {data.isCritical && (
-                                                    <span className="text-red-600 ml-1" title="Câu liệt">⚠</span>
-                                                )}
-                                            </th>
-                                            <th className="px-4 py-3 text-center whitespace-nowrap font-medium text-gray-900">
-                                                {truncateText(data.prompt, 50)}
+                                            <th scope="row" className="px-4 py-3 text-center whitespace-nowrap font-medium text-gray-900">
+                                                <p className='w-24'>{data.code} </p>
                                             </th>
 
-                                            <td className="px-4 py-3 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white">
-                                                {data.type}
+                                            <td className="py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <img
+                                                    src={
+                                                        data.imageName
+                                                            ? data.imageName.startsWith('data:image') || data.imageName.startsWith('blob:')
+                                                                ? data.imageName
+                                                                : import.meta.env.VITE_API_URL_SIGN_IMG + data.imageName
+                                                            : '/path/to/default-image.jpg'
+                                                    }
+                                                    alt="Ảnh biển báo"
+                                                    className="max-w-[180px] max-h-full w-auto object-cover rounded-md mx-auto"
+                                                />
                                             </td>
 
-                                            <td className="px-4 py-3 flex items-center justify-start">
+                                            <td className="px-4 py-3 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white">
+                                                {data.title}
+                                            </td>
+
+                                            <th className="px-4 py-3 text-center whitespace-nowrap font-medium text-gray-900">
+                                                {truncateText(data.description, 50)}
+                                            </th>
+
+                                            <td className="px-4 py-3">
                                                 <div className="flex items-center space-x-4">
                                                     <button onClick={() => {
                                                         setUpdateId(data.id);
@@ -213,7 +217,7 @@ const SignManager = () => {
                             currentPage={page}
                             totalPages={totalPages}
                             onPageChange={(page) => {
-                                keyword.trim() ? loadSearchResults(page) : loadMcQuestions(page);
+                                keyword.trim() ? loadSearchResults(page) : loadSigns(page);
                             }}
                         />
 
@@ -224,6 +228,12 @@ const SignManager = () => {
             {showCreation && (
                 <div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%)] max-h-full bg-black bg-opacity-50">
                     <SignCreation toggleCreation={toggleCreation} />
+                </div>
+            )}
+
+            {showUpdation && (
+                <div tabIndex={-1} aria-hidden="true" className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%)] max-h-full bg-black bg-opacity-50">
+                    <SignUpdation updateId={updateId} toggleUpdation={toggleUpdation} />
                 </div>
             )}
 

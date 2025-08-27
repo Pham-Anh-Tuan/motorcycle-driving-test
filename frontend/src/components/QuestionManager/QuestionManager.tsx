@@ -71,7 +71,7 @@ const QuestionManager = () => {
             setTotalMcQuestions(data.totalElements);
             setPage(data.number);
         } catch (err) {
-            console.error("Lỗi khi tìm sản phẩm:", err);
+            console.error("Lỗi khi tìm biển báo:", err);
         }
     };
 
@@ -93,7 +93,7 @@ const QuestionManager = () => {
             await mcQuestionApi.deleteMcQuestion(deleteId);
             window.location.reload();
         } catch (error) {
-            console.error("Xóa sản phẩm không thành công!", error);
+            console.error("Xóa câu hỏi không thành công!", error);
         }
     };
 
