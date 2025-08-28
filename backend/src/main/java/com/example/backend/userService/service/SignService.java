@@ -3,6 +3,7 @@ package com.example.backend.userService.service;
 import com.example.backend.core.config.ImageConfig;
 import com.example.backend.core.mapper.SignMapper;
 import com.example.backend.core.request.SignReq;
+import com.example.backend.core.response.SignRes;
 import com.example.backend.userService.model.Sign;
 import com.example.backend.userService.repository.SignRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,10 @@ public class SignService {
     public Map<String, Object> getManagerSigns(Pageable pageable) {
         Page<Sign> signsPage = signRepository.findAllByOrderByCreatedAtDesc(pageable);
         return toPagedResponse(signsPage, SignMapper::toSignResList);
+    }
+
+    public List<SignRes> getSigns() {
+        return SignMapper.toSignResList(signRepository.findAllByOrderByCreatedAtDesc());
     }
 
     public ResponseEntity<?> getSignRes(String signId) {

@@ -9,6 +9,8 @@ import Review from "../components/Review/Review";
 import Tests from "../components/ExamList/ExamList";
 import QuestionManager from "../components/QuestionManager/QuestionManager";
 import SignManager from "../components/SignManager/SignManager";
+import Sign from "../components/TrafficSign/Sign";
+import NewsManager from "../components/NewsManager/NewsManager";
 
 const AppRoutes = () => {
     return (
@@ -36,12 +38,15 @@ const AppRoutes = () => {
                     <Route path="20-cau-diem-liet" element={<Review />} />
 
                     <Route path="cac-de-thi" element={<Tests />} />
+
+                    <Route path="cac-bien-bao" element={<Sign />} />
                 </Route>
 
                 <Route path="/" element={<AdminDashboard />}>
                     <Route index element={<> </>} />
                     <Route path="/cau-hoi" element={<QuestionManager />} />
                     <Route path="/bien-bao" element={<SignManager />} />
+                    <Route path="/tin-tuc" element={<NewsManager />} />
                 </Route>
             </Routes>
         </Router>

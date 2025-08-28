@@ -22,4 +22,8 @@ public class SignMapper {
     public static List<SignRes> toSignResList(Page<Sign> signList) {
         return signList.stream().map(SignMapper::toSignRes).collect(Collectors.toList());
     }
+
+    public static List<SignRes> toSignResList(List<Sign> signList) {
+        return signList.stream().map(SignMapper::toSignRes).collect(Collectors.toList());
+    }
 }

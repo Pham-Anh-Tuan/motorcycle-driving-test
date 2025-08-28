@@ -15,23 +15,6 @@ const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState("Câu hỏi");
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case "Câu hỏi":
-        return <div>
-          <QuestionManager />
-        </div>;
-      case "Biển báo":
-        return <div>
-          <SignManager />
-        </div>;
-      case "Tin tức":
-        return <div>Quản lý tin tức (Tiêu đề, ảnh, ngày đăng, nội dung)</div>;
-      default:
-        return null;
-    }
-  };
-
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 640) {
@@ -66,18 +49,34 @@ const AdminDashboard = () => {
           </button>
         </div>
         <nav className="mt-10 space-y-4">
-          {menuItems.map(({ label, icon: Icon, path }) => (
+          {/* {menuItems.map(({ label, icon: Icon, path }) => (
             <NavLink
               key={label}
               to={path}
-              className={`flex w-full items-center ${sidebarOpen ? "justify-start px-4" : "justify-center"
+              className={({ isActive }) =>
+                `flex w-full items-center ${sidebarOpen ? "justify-start px-4" : "justify-center"
                 } py-2 rounded-sm hover:bg-sky-600 transition ${activeTab === label ? "bg-sky-700" : "bg-transparent"
-                }`}
+                }`
+              }
             >
               <Icon className="w-5 h-5" />
               {sidebarOpen && <span className="ml-2">{label}</span>}
             </NavLink>
 
+          ))} */}
+          {menuItems.map(({ label, icon: Icon, path }) => (
+            <NavLink
+              key={label}
+              to={path}
+              className={({ isActive }) =>
+                `flex w-full items-center ${sidebarOpen ? "justify-start px-4" : "justify-center"
+                } py-2 rounded-sm transition hover:bg-sky-600 ${isActive ? "bg-sky-700" : "bg-transparent"
+                }`
+              }
+            >
+              <Icon className="w-5 h-5" />
+              {sidebarOpen && <span className="ml-2">{label}</span>}
+            </NavLink>
           ))}
         </nav>
         <div className="absolute bottom-6 left-4 text-white">
@@ -88,7 +87,6 @@ const AdminDashboard = () => {
         </div>
       </aside>
       <main className="flex-1 p-6 overflow-y-auto ml-16 sm:ml-0">
-        {/* {renderContent()} */}
         <Outlet /> {/* Dùng để render nội dung của từng Route */}
       </main>
     </div>

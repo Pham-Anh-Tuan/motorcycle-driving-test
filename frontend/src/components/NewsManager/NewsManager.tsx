@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
-import { truncateText } from "../../hooks/TruncateText";
-import { mcQuestionApi, signApi } from "../../api/api";
-import Pagination from "../../hooks/Pagination";
-import SignCreation from "./SignCreation";
-import SignUpdation from "./SignUpdation";
+import React, { useEffect, useState } from 'react'
+import { newsApi } from '../../api/api';
+import formatDateDMYHM from '../../hooks/DateTimeFormat';
+import Pagination from '../../hooks/Pagination';
 
-const SignManager = () => {
+const NewsManager = () => {
     const [showCreation, setShowCreation] = useState(false);
     const toggleCreation = () => {
         setShowCreation(!showCreation);
@@ -23,28 +21,26 @@ const SignManager = () => {
     const [updateId, setUpdateId] = useState<string>("");
     const [deleteId, setDeleteId] = useState<string>("");
 
-    interface Sign {
+    interface News {
         id: string;
-        code: string;
         title: string;
-        imageName?: string;
-        imageFile?: File | null;
-        description: string;
+        thumbnailName: string;
+        createdAt: string;
     }
 
-    const [totalSigns, setTotalSigns] = useState(0);
+    const [totalNews, setTotalNews] = useState(0);
     const [page, setPage] = useState(0); // Trang hiện tại (bắt đầu từ 0)
     const [totalPages, setTotalPages] = useState(1); // Tổng số trang
-    const [signList, setSignList] = useState<Sign[]>([]);
+    const [newsList, setNewsList] = useState<News[]>([]);
 
     const [keyword, setKeyword] = useState("");
 
     const loadSigns = async (pageParam: number) => {
         try {
-            const { data } = await signApi.getManagerSigns(pageParam, 15);
-            setSignList(data.content);
+            const { data } = await newsApi.getManagerNews(pageParam, 15);
+            setNewsList(data.content);
             setTotalPages(data.totalPages);
-            setTotalSigns(data.totalElements);
+            setTotalNews(data.totalElements);
             setPage(data.number); // hoặc pageParam
         } catch (error) {
             console.error("Lỗi gọi API:", error);
@@ -56,18 +52,18 @@ const SignManager = () => {
 
         const searchValue = keywordParam ?? keyword;
         try {
-            const { data } = await signApi.searchSigns(searchValue.trim(), pageParam, 15);
-            setSignList(data.content);
+            const { data } = await newsApi.searchNews(searchValue.trim(), pageParam, 15);
+            setNewsList(data.content);
             setTotalPages(data.totalPages);
-            setTotalSigns(data.totalElements);
+            setTotalNews(data.totalElements);
             setPage(data.number);
         } catch (err) {
-            console.error("Lỗi khi tìm biển báo:", err);
+            console.error("Lỗi khi tìm tin tức:", err);
         }
     };
 
     useEffect(() => {
-        setSignList([]);
+        setNewsList([]);
         setPage(0); // reset page
         loadSigns(0); // bắt đầu từ trang 0
     }, []);
@@ -78,16 +74,6 @@ const SignManager = () => {
         }
     }, [keyword]);
 
-
-    const deleteSign = async () => {
-        try {
-            await signApi.deleteSign(deleteId);
-            window.location.reload();
-        } catch (error) {
-            console.error("Xóa biển báo không thành công!", error);
-        }
-    };
-
     return (
         <div className='w-full bg-gray-100 dark:bg-gray-900 overflow-x-hidden'>
             <section className="antialiased">
@@ -97,9 +83,9 @@ const SignManager = () => {
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
                             <div className="flex-1 flex flex-col">
                                 <h3 className="text-lg font-semibold">
-                                    Danh sách biển báo
+                                    Danh sách tin tức
                                 </h3>
-                                <span className="dark:text-white text-sm">Tổng số: {totalSigns}</span>
+                                <span className="dark:text-white text-sm">Tổng số: {totalNews}</span>
                             </div>
 
                             <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
@@ -108,7 +94,7 @@ const SignManager = () => {
                                     <svg className="h-3.5 w-3.5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                         <path clipRule="evenodd" fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                                     </svg>
-                                    Thêm biển báo
+                                    Thêm tin tức
                                 </button>
                             </div>
                         </div>
@@ -139,30 +125,29 @@ const SignManager = () => {
                             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
-                                        <th scope="col" className="px-4 py-4 text-center">Mã biển báo</th>
+                                        <th scope="col" className="px-4 py-4 text-center">Tiêu đề</th>
                                         <th scope="col" className="px-4 py-4 text-center">Ảnh</th>
-                                        <th scope="col" className="px-4 py-3 text-center">Tên biển báo</th>
-                                        <th scope="col" className="px-4 py-3 text-center">Mô tả</th>
+                                        <th scope="col" className="px-4 py-3 text-center">Ngày tạo</th>
                                         <th scope="col" className="px-4 py-3 text-center">
                                             <span className="sr-only">Actions</span>
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {signList.map((data) => (
+                                    {newsList.map((data) => (
                                         <tr key={data.id}
                                             className="border-b dark:border-gray-700">
                                             <th scope="row" className="px-4 py-3 text-center whitespace-nowrap font-medium text-gray-900">
-                                                <p className='w-24'>{data.code} </p>
+                                                <p className='w-24'>{data.title} </p>
                                             </th>
 
                                             <td className="py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 <img
                                                     src={
-                                                        data.imageName
-                                                            ? data.imageName.startsWith('data:image') || data.imageName.startsWith('blob:')
-                                                                ? data.imageName
-                                                                : import.meta.env.VITE_API_URL_SIGN_IMG + data.imageName
+                                                        data.thumbnailName
+                                                            ? data.thumbnailName.startsWith('data:image') || data.thumbnailName.startsWith('blob:')
+                                                                ? data.thumbnailName
+                                                                : import.meta.env.VITE_API_URL_SIGN_IMG + data.thumbnailName
                                                             : '/path/to/default-image.jpg'
                                                     }
                                                     alt="Ảnh biển báo"
@@ -171,12 +156,8 @@ const SignManager = () => {
                                             </td>
 
                                             <td className="px-4 py-3 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white">
-                                                {data.title}
+                                                {data?.createdAt ? formatDateDMYHM(data.createdAt) : ''}
                                             </td>
-
-                                            <th className="px-4 py-3 text-center whitespace-nowrap font-medium text-gray-900">
-                                                {truncateText(data.description, 50)}
-                                            </th>
 
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center space-x-4">
@@ -185,7 +166,7 @@ const SignManager = () => {
                                                         toggleUpdation();
                                                     }}
                                                         type="button" className="w-28 py-2 px-3 flex items-center text-sm font-medium text-center text-white
-                                                         bg-primary hover:bg-sky-600 rounded-sm border border-primary hover:border-sky-600">
+                                                                 bg-primary hover:bg-sky-600 rounded-sm border border-primary hover:border-sky-600">
                                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 -ml-0.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                             <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
                                                             <path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd" />
@@ -225,7 +206,7 @@ const SignManager = () => {
                 </div>
             </section>
 
-            {showCreation && (
+            {/* {showCreation && (
                 <div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%)] max-h-full bg-black bg-opacity-50">
                     <SignCreation toggleCreation={toggleCreation} />
                 </div>
@@ -235,7 +216,7 @@ const SignManager = () => {
                 <div tabIndex={-1} aria-hidden="true" className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%)] max-h-full bg-black bg-opacity-50">
                     <SignUpdation updateId={updateId} toggleUpdation={toggleUpdation} />
                 </div>
-            )}
+            )} */}
 
 
             {showDeletion && (
@@ -260,9 +241,7 @@ const SignManager = () => {
                                     toggleDeletion();
                                 }}
                                     type="button" className="py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-sm border border-gray-200 hover:bg-gray-100 hover:text-gray-900 focus:z-10 ">Không</button>
-                                <button onClick={() => {
-                                    deleteSign();
-                                }}
+                                <button
                                     type="button" className="py-2 px-3 text-sm font-medium text-center text-white bg-red-700 rounded-sm hover:bg-red-800">Có</button>
                             </div>
                         </div>
@@ -273,4 +252,4 @@ const SignManager = () => {
     )
 }
 
-export default SignManager;
+export default NewsManager

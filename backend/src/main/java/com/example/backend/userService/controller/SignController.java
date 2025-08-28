@@ -2,6 +2,7 @@ package com.example.backend.userService.controller;
 
 import com.example.backend.core.request.McQuestionReq;
 import com.example.backend.core.request.SignReq;
+import com.example.backend.core.response.SignRes;
 import com.example.backend.userService.service.McQuestionService;
 import com.example.backend.userService.service.SignService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -36,6 +38,11 @@ public class SignController {
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return signService.getManagerSigns(pageable);
+    }
+
+    @GetMapping(path = "/public/signs")
+    public List<SignRes> getSigns() {
+        return signService.getSigns();
     }
 
     @GetMapping(path = "/admin/sign/{id}")

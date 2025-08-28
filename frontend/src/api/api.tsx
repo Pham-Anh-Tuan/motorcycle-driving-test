@@ -66,6 +66,27 @@ export const examApi = {
     }
 }
 
+export const newsApi = {
+    getManagerNews(page: number, size: number) {
+        const params = new URLSearchParams();
+        params.append("page", page.toString());
+        params.append("size", size.toString());
+        return axiosJson.get(`/admin/manager-news`, { params });
+    },
+
+    searchNews(keyword: string, page: number, size: number) {
+        const params = new URLSearchParams();
+        params.append("keyword", keyword);
+        params.append("page", page.toString());
+        params.append("size", size.toString());
+        return axiosJson.get(`/admin/search-news`, { params });
+    },
+
+    createNews(formData: FormData) {
+        return axiosMultipart.post(`/admin/create-news`, formData);
+    },
+}
+
 export const signApi = {
     getManagerSigns(page: number, size: number) {
         const params = new URLSearchParams();
@@ -80,6 +101,10 @@ export const signApi = {
         params.append("page", page.toString());
         params.append("size", size.toString());
         return axiosJson.get(`/admin/search-signs`, { params });
+    },
+
+    getSigns() {
+        return axiosJson.get(`/public/signs`);
     },
 
     getSignById(id: string) {

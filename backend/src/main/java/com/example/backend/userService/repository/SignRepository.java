@@ -6,8 +6,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface SignRepository extends JpaRepository<Sign, String> {
+    List<Sign> findAllByOrderByCreatedAtDesc();
+
     Page<Sign> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
     Page<Sign> findByCodeContainingIgnoreCaseOrTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(

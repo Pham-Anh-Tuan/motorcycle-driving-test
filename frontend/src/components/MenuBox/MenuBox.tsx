@@ -30,7 +30,7 @@ const MenuBox = () => {
                     <a href="/cac-de-thi" className="bg-gray-50 p-6 rounded shadow text-center hover:shadow-md transition relative cursor-pointer border border-gray-200">
                         <div className="text-5xl sm:text-6xl mb-4">📋</div>
                         <h3 className="text-lg font-semibold">Thi thử bộ đề tạo sẵn</h3>
-                        <span className="absolute top-2 right-2 bg-green-900 text-white text-xs px-2 py-0.5 rounded-full">10</span>
+                        <span className="absolute top-2 right-2 bg-green-900 text-white text-xs px-2 py-0.5 rounded-full">8</span>
                     </a>
 
                     {/* Card 3 */}
@@ -55,10 +55,10 @@ const MenuBox = () => {
                     </div>
 
                     {/* Card 6 */}
-                    <div className="bg-gray-50 p-6 rounded shadow text-center hover:shadow-md transition cursor-pointer border border-gray-200">
+                    <a href="/cac-bien-bao" className="bg-gray-50 p-6 rounded shadow text-center hover:shadow-md transition cursor-pointer border border-gray-200">
                         <div className="text-5xl sm:text-6xl mb-4 text-yellow-500">🚦</div>
                         <h3 className="text-lg font-semibold">Biển báo giao thông</h3>
-                    </div>
+                    </a>
 
                 </div>
             </main>
