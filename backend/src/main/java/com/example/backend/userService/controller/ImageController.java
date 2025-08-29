@@ -25,4 +25,14 @@ public class ImageController {
     public ResponseEntity<byte[]> getSignImage(@PathVariable String imageName) throws IOException {
         return imageService.getImage(imageName, "signImg");
     }
+
+    @GetMapping("/thumbImages/{imageName}")
+    public ResponseEntity<byte[]> getThumbnailImage(@PathVariable String imageName) throws IOException {
+        return imageService.getImage(imageName, "thumbnailImg");
+    }
+
+    @GetMapping("/newsImages/{imageName}")
+    public ResponseEntity<byte[]> getNewsImage(@PathVariable String imageName) throws IOException {
+        return imageService.getImage(imageName, "newsImg");
+    }
 }

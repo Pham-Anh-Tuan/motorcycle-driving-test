@@ -34,9 +34,26 @@ public class NewsController {
         return newsService.searchNews(keyword, pageable);
     }
 
+    @GetMapping(path = "/admin/updated-news/{id}")
+    public ResponseEntity<?> getUpdatedNews(@PathVariable("id") String id) {
+        return newsService.getUpdatedNewsRes(id);
+    }
+
     @PostMapping(value = "/admin/create-news", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createNews(@ModelAttribute NewsReq newsReq) {
         return newsService.createNews(newsReq);
     }
+
+    @PostMapping(value = "/admin/update-news", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateNews(@ModelAttribute NewsReq newsReq) {
+        return newsService.updateNews(newsReq);
+    }
+
+    @DeleteMapping("/admin/delete-news/{id}")
+    public ResponseEntity<?> deleteNews(@PathVariable("id") String id) {
+        return newsService.deleteNews(id);
+    }
+
+
 
 }

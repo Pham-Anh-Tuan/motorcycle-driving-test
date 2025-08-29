@@ -82,8 +82,20 @@ export const newsApi = {
         return axiosJson.get(`/admin/search-news`, { params });
     },
 
+    getUpdatedNews(id: string) {
+        return axiosJson.get(`/admin/updated-news/` + id);
+    },
+
     createNews(formData: FormData) {
         return axiosMultipart.post(`/admin/create-news`, formData);
+    },
+
+    updateNews(formData: FormData) {
+        return axiosMultipart.post(`/admin/update-news`, formData);
+    },
+
+    deleteNews(id: String) {
+        return axiosJson.delete(`/admin/delete-news/${id}`);
     },
 }
 
