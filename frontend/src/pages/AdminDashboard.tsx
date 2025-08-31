@@ -1,19 +1,17 @@
 import { useEffect, useState } from "react";
-import { Menu, Newspaper, TrafficCone, FileQuestion, LogOut } from "lucide-react";
+import { Menu, Newspaper, TrafficCone, FileQuestion, LogOut, LayoutDashboard } from "lucide-react";
 import Logo from "../a1Logo.png";
-import QuestionManager from "../components/QuestionManager/QuestionManager";
-import SignManager from "../components/SignManager/SignManager";
 import { NavLink, Outlet } from "react-router-dom";
 
 const menuItems = [
-  { label: "Câu hỏi", icon: FileQuestion, path: "/cau-hoi" },
-  { label: "Biển báo", icon: TrafficCone, path: "/bien-bao" },
-  { label: "Tin tức", icon: Newspaper, path: "/tin-tuc" },
+  { label: "Bảng điều khiển", icon: LayoutDashboard, path: "/quan-li" },
+  { label: "Câu hỏi", icon: FileQuestion, path: "/quan-li/cau-hoi" },
+  { label: "Biển báo", icon: TrafficCone, path: "/quan-li/bien-bao" },
+  { label: "Tin tức", icon: Newspaper, path: "/quan-li/tin-tuc" },
 ];
 
 const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [activeTab, setActiveTab] = useState("Câu hỏi");
 
   useEffect(() => {
     const handleResize = () => {
@@ -34,6 +32,16 @@ const AdminDashboard = () => {
     };
   }, []);
 
+  const handleLogout = () => {
+    // Xóa token khỏi localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('imageName');
+    localStorage.removeItem('email');
+    localStorage.removeItem('role');
+
+    window.location.href = '/';
+  };
+
   return (
     <div className="flex h-screen font-sans bg-gray-100">
       <aside className={`bg-primary text-white fixed sm:static inset-0 z-10 h-screen transition-all ${sidebarOpen ? "w-64" : "w-16"} duration-300 p-4`}>
@@ -49,25 +57,11 @@ const AdminDashboard = () => {
           </button>
         </div>
         <nav className="mt-10 space-y-4">
-          {/* {menuItems.map(({ label, icon: Icon, path }) => (
-            <NavLink
-              key={label}
-              to={path}
-              className={({ isActive }) =>
-                `flex w-full items-center ${sidebarOpen ? "justify-start px-4" : "justify-center"
-                } py-2 rounded-sm hover:bg-sky-600 transition ${activeTab === label ? "bg-sky-700" : "bg-transparent"
-                }`
-              }
-            >
-              <Icon className="w-5 h-5" />
-              {sidebarOpen && <span className="ml-2">{label}</span>}
-            </NavLink>
-
-          ))} */}
           {menuItems.map(({ label, icon: Icon, path }) => (
             <NavLink
               key={label}
               to={path}
+              end
               className={({ isActive }) =>
                 `flex w-full items-center ${sidebarOpen ? "justify-start px-4" : "justify-center"
                 } py-2 rounded-sm transition hover:bg-sky-600 ${isActive ? "bg-sky-700" : "bg-transparent"
@@ -80,7 +74,9 @@ const AdminDashboard = () => {
           ))}
         </nav>
         <div className="absolute bottom-6 left-4 text-white">
-          <button className="flex items-center gap-2 hover:text-red-400">
+          <button onClick={() => handleLogout()}
+            type="button"
+            className="flex items-center gap-2 hover:text-red-400">
             <LogOut />
             {sidebarOpen && <span>Đăng xuất</span>}
           </button>

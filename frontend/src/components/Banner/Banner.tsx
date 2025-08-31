@@ -1,6 +1,6 @@
 const Banner = () => {
     return (
-        <div className="container bg-white py-6 text-sm sm:text-base space-y-1">
+        <div className="container py-4 text-sm sm:text-base space-y-1">
             <p>
                 🛵 Ôn thi bằng lái xe máy hạng A1 giờ đây trở nên đơn giản và dễ tiếp cận hơn bao giờ hết!
                 📚 Cung cấp trọn bộ 250 câu hỏi lý thuyết chính thức do Bộ Giao thông Vận tải ban hành, luôn được cập nhật mới nhất.

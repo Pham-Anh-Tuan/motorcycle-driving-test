@@ -182,7 +182,7 @@ const QuestionCreation: React.FC<QuestionCreationProps> = ({ toggleCreation }) =
     return (
         <div className="relative p-4 w-full max-w-2xl max-h-full">
             <div className="relative p-4 bg-white rounded-sm shadow sm:p-5">
-                <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
+                <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Thêm câu hỏi</h3>
                     <button onClick={toggleCreation}
                         type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-md text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">

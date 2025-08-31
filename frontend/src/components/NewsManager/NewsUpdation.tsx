@@ -1,12 +1,11 @@
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Heading from "@tiptap/extension-heading";
 import { CustomResizableImage } from "./CustomResizableImage";
 import { useEffect, useRef, useState } from "react";
 import { newsApi } from "../../api/api";
-import { IoCloudUploadOutline, IoDocumentTextOutline } from "react-icons/io5";
+import { IoCloudUploadOutline} from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
 import Toolbar from "./Toolbar";
 

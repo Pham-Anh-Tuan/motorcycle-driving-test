@@ -48,11 +48,11 @@ const MenuBox = () => {
                     </a>
 
                     {/* Card 5 */}
-                    <div className="bg-gray-50 p-6 rounded shadow text-center hover:shadow-md transition relative cursor-pointer border border-gray-200">
+                    <a  href="/cau-hoi-bi-sai-nhieu" className="bg-gray-50 p-6 rounded shadow text-center hover:shadow-md transition relative cursor-pointer border border-gray-200">
                         <div className="text-5xl sm:text-6xl mb-4 text-red-700">❌</div>
                         <h3 className="text-lg font-semibold">Câu hỏi bị sai nhiều</h3>
-                        <span className="absolute top-2 right-2 bg-red-700 text-white text-xs px-2 py-0.5 rounded-full">0/50</span>
-                    </div>
+                        <span className="absolute top-2 right-2 bg-red-700 text-white text-xs px-2 py-0.5 rounded-full">30</span>
+                    </a>
 
                     {/* Card 6 */}
                     <a href="/cac-bien-bao" className="bg-gray-50 p-6 rounded shadow text-center hover:shadow-md transition cursor-pointer border border-gray-200">

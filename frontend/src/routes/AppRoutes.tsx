@@ -11,10 +11,16 @@ import QuestionManager from "../components/QuestionManager/QuestionManager";
 import SignManager from "../components/SignManager/SignManager";
 import Sign from "../components/TrafficSign/Sign";
 import NewsManager from "../components/NewsManager/NewsManager";
+import News from "../components/News/News";
+import Blog from "../components/News/Blog";
+import ScrollToTop from "../hooks/ScrollToTop";
+import OAuth2Redirect from "../components/Login/OAuth2Redirect";
+import Dashboard from "../components/Dashboard/Dashboard";
 
 const AppRoutes = () => {
     return (
         <Router>
+            <ScrollToTop />
             <Routes>
                 <Route path="/" element={<Home />}>
                     <Route index element={<>
@@ -36,18 +42,29 @@ const AppRoutes = () => {
                     <Route path="bien-bao-duong-bo" element={<Review />} />
                     <Route path="sa-hinh" element={<Review />} />
                     <Route path="20-cau-diem-liet" element={<Review />} />
+                    <Route path="cau-hoi-bi-sai-nhieu" element={<Review />} />
 
                     <Route path="cac-de-thi" element={<Tests />} />
 
                     <Route path="cac-bien-bao" element={<Sign />} />
+                    <Route path="cac-tin-tuc" element={<News />} />
+                    <Route path="bai-viet/:id" element={
+                        <>
+                            <Blog />
+                        </>}
+                    />
+                    <Route path="/oauth2-redirect" element={<OAuth2Redirect />} />
                 </Route>
-
-                <Route path="/" element={<AdminDashboard />}>
-                    <Route index element={<> </>} />
-                    <Route path="/cau-hoi" element={<QuestionManager />} />
-                    <Route path="/bien-bao" element={<SignManager />} />
-                    <Route path="/tin-tuc" element={<NewsManager />} />
-                </Route>
+                {(
+                    localStorage.getItem("role") === "1"
+                ) && (
+                        <Route path="/quan-li" element={<AdminDashboard />}>
+                            <Route index element={<> <Dashboard /> </>} />
+                            <Route path="cau-hoi" element={<QuestionManager />} />
+                            <Route path="bien-bao" element={<SignManager />} />
+                            <Route path="tin-tuc" element={<NewsManager />} />
+                        </Route>
+                    )}
             </Routes>
         </Router>
     )

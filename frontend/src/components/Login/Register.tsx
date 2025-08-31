@@ -2,11 +2,11 @@ import { useState } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import { FaEyeSlash } from "react-icons/fa";
 import { FaEye } from "react-icons/fa";
+import { alertError } from "../Shared/AlertError";
+import { alertSuccess } from "../Shared/AlertSuccess";
+import { authApi } from "../../api/api";
+import type { RegisterData } from "./AuthTypes";
 
-export interface RegisterData {
-    email: string;
-    password: string;
-}
 
 interface RegisterProps {
     setRegisterPopup: (isOpen: boolean) => void;
@@ -16,6 +16,7 @@ interface RegisterProps {
 const Register: React.FC<RegisterProps> = ({ setRegisterPopup, setLoginPopup }) => {
     const [form, setForm] = useState<RegisterData>({
         email: '',
+        fullName: '',
         password: '',
     });
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,6 +25,32 @@ const Register: React.FC<RegisterProps> = ({ setRegisterPopup, setLoginPopup }) 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [confirmPass, setConfirmPass] = useState<string>("");
+
+    const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        // Kiểm tra mật khẩu khớp
+        if (form.password !== confirmPass) {
+            alertError("Mật khẩu và nhập lại mật khẩu không khớp.");
+            return;
+        }
+
+        try {
+            await authApi.register(form);
+            setRegisterPopup(false);
+            alertSuccess("Đăng ký thành công!");
+            // Lưu token nếu cần
+            // localStorage.setItem('token', response.data.token);
+        } catch (error: any) {
+            // Nếu API trả lỗi email đã tồn tại
+            if (error?.response?.data === "Email already exists") {
+                alertError("Email đã tồn tại. Vui lòng chọn email khác.");
+            } else {
+                alertError("Đăng ký thất bại. Vui lòng thử lại.");
+            }
+            console.error("Đăng ký thất bại:", error);
+        }
+    };
     return (
         <div>
             <section className="h-screen w-screen fixed top-0 left-0 bg-black/50 z-50">
@@ -44,7 +71,7 @@ const Register: React.FC<RegisterProps> = ({ setRegisterPopup, setLoginPopup }) 
                                 <hr className="border-gray-300 my-3" />
                             </div>
 
-                            <form className="space-y-3">
+                            <form className="space-y-3" onSubmit={handleRegister}>
                                 <div>
                                     <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">Email</label>
                                     <input
@@ -53,6 +80,11 @@ const Register: React.FC<RegisterProps> = ({ setRegisterPopup, setLoginPopup }) 
                                             if (e.key === " ") e.preventDefault();
                                         }}
                                         type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-sm focus:outline-none focus:border-gray-300 block w-full p-2.5" placeholder="" required />
+                                </div>
+                                <div>
+                                    <label htmlFor="fullName" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Họ và tên</label>
+                                    <input onChange={handleChange}
+                                        type="name" name="fullName" id="fullName" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-sm focus:outline-none focus:border-gray-300 block w-full p-2.5" placeholder="" required />
                                 </div>
                                 <div>
                                     <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900">Mật khẩu</label>
@@ -76,7 +108,7 @@ const Register: React.FC<RegisterProps> = ({ setRegisterPopup, setLoginPopup }) 
                                     <label htmlFor="confirm-password" className="block mb-2 text-sm font-medium text-gray-900">Nhập lại mật khẩu</label>
                                     <div className="relative block w-full">
                                         <input
-                                            onChange={handleChange}
+                                            onChange={(e) => setConfirmPass(e.target.value)}
                                             onKeyDown={(e) => {
                                                 if (e.key === " ") e.preventDefault();
                                             }}

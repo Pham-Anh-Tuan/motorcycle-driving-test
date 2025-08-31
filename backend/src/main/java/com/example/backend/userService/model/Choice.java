@@ -24,5 +24,4 @@ public class Choice {
     @ManyToOne
     @JoinColumn(name = "choiceId", nullable = false)
     private McQuestion mcQuestion;
-
 }

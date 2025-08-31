@@ -5,50 +5,62 @@ import Logo from "../../a1Logo.png";
 const navMenus = [
   {
     name: "Trang chủ",
-    link: "/#home",
+    link: "/",
   },
   {
     name: "Tin tức",
-    link: "/#about",
+    link: "/cac-tin-tuc",
   },
   {
     name: "Mẹo thi",
-    link: "/#about",
+    link: "/bai-viet/92157cc0-3596-437a-8697-ef6da83ebcca",
   },
-  {
-    name: "Liên hệ",
-    link: ".#services",
-  },
-  // {
-  //   name: "Thực hành",
-  //   link: "#",
-  // },
 ];
 
 interface NavbarProps {
   setLoginPopup: (isOpen: boolean) => void;
+  setProfilePopup: (isOpen: boolean) => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ setLoginPopup }) => {
+const Navbar: React.FC<NavbarProps> = ({ setLoginPopup, setProfilePopup }) => {
   const [showMenu, setShowMenu] = useState(false);
-  const [theme, setTheme] = useState(
-    localStorage.getItem("theme") ? localStorage.getItem("theme") : "light"
-  );
-  const element = document.documentElement;
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
   };
 
-  useEffect(() => {
-    if (theme === "dark") {
-      element.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      element.classList.remove("dark");
-      localStorage.removeItem("theme");
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  const updateLogStatus = () => {
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!token);
+  };
+
+  const [imageName, setImageName] = useState<string>("userLogo192192adeal.png");
+
+  const updateImageName = () => {
+    const userLogo = localStorage.getItem('imageName');
+    if (userLogo !== null) {
+      setImageName(userLogo);
     }
-  }, [theme]);
+  };
+
+  useEffect(() => {
+    updateLogStatus();
+
+    updateImageName();
+
+    // Tạo một sự kiện tuỳ chỉnh khi đăng nhập và đăng xuất
+    const handleLogChange = () => {
+      updateImageName();
+    };
+
+    window.addEventListener('logUpdated', handleLogChange);
+
+    return () => {
+      window.removeEventListener('logUpdated', handleLogChange);
+    };
+  }, []);
 
   return (
     <>
@@ -86,8 +98,19 @@ const Navbar: React.FC<NavbarProps> = ({ setLoginPopup }) => {
             </div>
 
             <div className="flex gap-2 sm:mt-0">
-              <button onClick={() => setLoginPopup(true)}
-                className="bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded-sm text-sm font-normal text-white">Đăng nhập</button>
+              {isLoggedIn ? (
+                <button onClick={() => setLoginPopup(true)}
+                  className="bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded-sm text-sm font-normal text-white">Đăng nhập</button>
+              ) : (
+                <div className="group relative cursor-pointer size-9">
+                  <button onClick={() => setProfilePopup(true)}
+                    className="flex items-center">
+                    <img alt="" src={imageName.startsWith("https:")
+                      ? imageName
+                      : import.meta.env.VITE_API_URL_AVATAR_IMG + imageName} className="size-9 rounded-full object-cover object-center bg-gray-200" />
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Mobile Responsive Menu */}

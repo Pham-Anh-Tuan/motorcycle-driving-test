@@ -64,12 +64,25 @@ public class NewsService {
         return toPagedResponse(newsPage, NewsMapper::toManagerNewsResList);
     }
 
+    public Map<String, Object> getSumNews(Pageable pageable) {
+        Page<News> newsPage = newsRepository.findAllByOrderByCreatedAtDesc(pageable);
+        return toPagedResponse(newsPage, NewsMapper::toManagerNewsResList);
+    }
+
     public ResponseEntity<?> getUpdatedNewsRes(String newsId) {
         Optional<News> optionalNews = newsRepository.findById(newsId);
         if (optionalNews.isEmpty()) {
             return ResponseEntity.badRequest().body("Không tìm thấy bài viết này.");
         }
         return ResponseEntity.ok(NewsMapper.toUpdatedNewsRes(optionalNews.get()));
+    }
+
+    public ResponseEntity<?> getDetailNewsRes(String newsId) {
+        Optional<News> optionalNews = newsRepository.findById(newsId);
+        if (optionalNews.isEmpty()) {
+            return ResponseEntity.badRequest().body("Không tìm thấy bài viết này.");
+        }
+        return ResponseEntity.ok(NewsMapper.toDetailNewsRes(optionalNews.get()));
     }
 
     @Transactional

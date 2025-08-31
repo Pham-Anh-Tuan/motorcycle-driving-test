@@ -42,10 +42,10 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
 
   return (
     <nav
-      className="flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0 p-4"
+      className="flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0"
       aria-label="Table navigation"
     >
-      <span className="text-sm font-normal dark:text-white">
+      <span className="text-sm font-normal border border-gray-300 py-2 px-3">
         Trang {currentPage + 1} / {totalPages}
       </span>
 

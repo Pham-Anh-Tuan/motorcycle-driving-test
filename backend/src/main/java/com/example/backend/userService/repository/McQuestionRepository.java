@@ -1,5 +1,7 @@
 package com.example.backend.userService.repository;
 
+import com.example.backend.core.dto.DonutSliceDTO;
+import com.example.backend.core.dto.SeriesItemDTO;
 import com.example.backend.userService.model.McQuestion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -58,5 +60,20 @@ public interface McQuestionRepository extends JpaRepository<McQuestion, String> 
 
     List<McQuestion> findAllByIsCriticalOrderByQuestionNumberAsc(boolean isCritical);
 
-    List<McQuestion> findByType(String type);
+    List<McQuestion> findByQuestionNumberIn(List<Integer> questionNumbers);
+
+    @Query("SELECT new com.example.backend.core.dto.SeriesItemDTO(m.type, COUNT(m)) " +
+            "FROM McQuestion m " +
+            "GROUP BY m.type")
+    List<SeriesItemDTO> countQuestionsByType();
+
+    @Query("""
+        SELECT new com.example.backend.core.dto.DonutSliceDTO(
+            CASE WHEN m.isCritical = true THEN 'Câu liệt' ELSE 'Câu thường' END,
+            COUNT(m)
+        )
+        FROM McQuestion m
+        GROUP BY m.isCritical
+    """)
+    List<DonutSliceDTO> countCriticalVsNonCritical();
 }

@@ -17,10 +17,10 @@ const Footer = () => {
                     <div>
                         <h3 className="text-base font-semibold mb-2">Liên kết nhanh</h3>
                         <ul className="space-y-1">
-                            <li><a href="#" className="hover:underline">Trang chủ</a></li>
-                            <li><a href="#" className="hover:underline">Tin tức</a></li>
-                            <li><a href="#" className="hover:underline">Liên hệ</a></li>
-                            <li><a href="#" className="hover:underline">Thi thử</a></li>
+                            <li><a href="/" className="hover:underline">Trang chủ</a></li>
+                            <li><a href="/cac-tin-tuc" className="hover:underline">Tin tức</a></li>
+                            <li><a href="/bai-viet/92157cc0-3596-437a-8697-ef6da83ebcca" className="hover:underline">Mẹo thi</a></li>
+                            <li><a href="/de-ngau-nhien" className="hover:underline">Thi thử</a></li>
                         </ul>
                     </div>
 

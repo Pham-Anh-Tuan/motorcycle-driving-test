@@ -47,6 +47,9 @@ const Review = () => {
             case "/20-cau-diem-liet":
                 setCategory("20 câu điểm liệt")
                 return "20 câu điểm liệt";
+            case "/cau-hoi-bi-sai-nhieu":
+                setCategory("Câu hỏi bị sai nhiều")
+                return "Câu hỏi bị sai nhiều";
             default:
                 return "";
         }
@@ -62,6 +65,8 @@ const Review = () => {
             if (pathType === "20 câu điểm liệt") {
                 // 🔹 gọi API lấy 20 câu điểm liệt
                 ({ data } = await mcQuestionApi.getCriticalMcQuestions());
+            } else if (pathType === "Câu hỏi bị sai nhiều") {
+                ({ data } = await mcQuestionApi.getFrequentlyWrongMcQuestions());
             } else {
                 // 🔹 gọi API lấy câu hỏi theo loại
                 ({ data } = await mcQuestionApi.getMcQuestionsByType(pathType));

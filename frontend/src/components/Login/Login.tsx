@@ -2,6 +2,8 @@ import { useRef, useState } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import { FaEyeSlash } from "react-icons/fa";
 import { FaEye } from "react-icons/fa";
+import { alertError } from "../Shared/AlertError";
+import { authApi } from "../../api/api";
 
 interface LoginData {
     email: string;
@@ -46,8 +48,41 @@ const Login: React.FC<LoginProps> = ({ setLoginPopup, setForgetPwPopup, setRegis
         e.currentTarget.setCustomValidity(""); // reset khi người dùng đang gõ
     };
 
+    const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        try {
+            const response = await authApi.login(form);
+
+            // const { token, email, fullName, imageName } = response;
+
+            // Lưu token vào localStorage
+            localStorage.setItem('token', response.data?.token);
+            localStorage.setItem('imageName', response.data?.imageName);
+            localStorage.setItem('email', response.data?.email);
+            localStorage.setItem('role', response.data?.role);
+
+            if (String(response.data?.role) === "1" || String(response.data?.role) === "3") {
+                window.location.href = "/quan-li";
+            } else {
+                window.location.reload();
+            }
+        } catch (error: any) {
+            const message = error.response.data;
+            if (message === "Email not found") {
+                alertError("Email không tồn tại.");
+            } else if (message === "Invalid password") {
+                alertError("Mật khẩu không đúng.");
+            } else if (message === "Account blocked") {
+                alertError("Tài khoản này đã bị khóa.");
+            } else {
+                alertError("Đăng nhập thất bại.");
+            }
+
+        }
+    };
+
     const handleGoogleLogin = () => {
-        window.location.href = `https://kushoe.xyz/oauth2/authorization/google`;
+        window.location.href = `http://localhost:8080/oauth2/authorization/google`;
     };
 
     return (
@@ -69,12 +104,12 @@ const Login: React.FC<LoginProps> = ({ setLoginPopup, setForgetPwPopup, setRegis
 
                                 <hr className="border-gray-300 my-3" />
 
-                                <div>
+                                {/* <div>
                                     Hãy đăng nhập để lưu kết quả ôn tập và có thể đồng bộ trên các thiết bị khác của bạn.
-                                </div>
+                                </div> */}
                             </div>
 
-                            <form className="space-y-3">
+                            <form className="space-y-3" onSubmit={handleLogin}>
                                 <div>
                                     <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">Email</label>
                                     <input ref={emailRef}
@@ -121,6 +156,7 @@ const Login: React.FC<LoginProps> = ({ setLoginPopup, setForgetPwPopup, setRegis
 
                                 <div className="flex items-center gap-4">
                                     <button
+                                        onClick={handleGoogleLogin}
                                         type="button" className="w-full flex items-center justify-center gap-2 text-black bg-white shadow-md border border-gray-200 font-medium rounded-sm text-sm px-5 py-2.5">
                                         <img
                                             src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"

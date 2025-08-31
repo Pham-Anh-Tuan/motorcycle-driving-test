@@ -1,3 +1,4 @@
+import type { LoginData, RegisterData } from "../components/Login/AuthTypes";
 import { axiosJson, axiosMultipart } from "./axios";
 
 export const mcQuestionApi = {
@@ -21,6 +22,10 @@ export const mcQuestionApi = {
 
     getCriticalMcQuestions() {
         return axiosJson.get(`public/critical-questions`);
+    },
+
+    getFrequentlyWrongMcQuestions() {
+        return axiosJson.get(`public/mcQuestion-by-numbers`);
     },
 
     searchManagerMcQuestions(keyword: string, page: number, size: number) {
@@ -53,7 +58,15 @@ export const mcQuestionApi = {
 
     deleteMcQuestion(id: string) {
         return axiosJson.delete(`/admin/deleteMcQuestion/` + id);
-    }
+    },
+
+    getQuestionStatsByType() {
+        return axiosJson.get(`admin/questions/by-type`);
+    },
+
+    getCriticalVsNonCritical() {
+        return axiosJson.get(`admin/questions/critical-vs-noncritical`);
+    },
 }
 
 export const examApi = {
@@ -74,6 +87,13 @@ export const newsApi = {
         return axiosJson.get(`/admin/manager-news`, { params });
     },
 
+    getSumNews(page: number, size: number) {
+        const params = new URLSearchParams();
+        params.append("page", page.toString());
+        params.append("size", size.toString());
+        return axiosJson.get(`/public/sum-news`, { params });
+    },
+
     searchNews(keyword: string, page: number, size: number) {
         const params = new URLSearchParams();
         params.append("keyword", keyword);
@@ -84,6 +104,10 @@ export const newsApi = {
 
     getUpdatedNews(id: string) {
         return axiosJson.get(`/admin/updated-news/` + id);
+    },
+
+    getDetailNews(id: string) {
+        return axiosJson.get(`/public/detail-news/` + id);
     },
 
     createNews(formData: FormData) {
@@ -134,5 +158,28 @@ export const signApi = {
     deleteSign(id: string) {
         return axiosJson.delete(`/admin/delete-sign/` + id);
     }
+}
 
+export const authApi = {
+    login(loginData: LoginData) {
+        return axiosJson.post('/public/login', loginData);
+    },
+
+    register(registerData: RegisterData) {
+        return axiosJson.post('/public/register', registerData);
+    },
+
+    changePassword(formData: FormData) {
+        return axiosJson.post('/user/change-password', formData);
+    },
+
+    forgotPassword(formData: FormData) {
+        return axiosJson.post('/public/forgot-password', formData);
+    },
+}
+
+export const profileApi = {
+    getProfile(email: String) {
+        return axiosJson.get('/user/profile/' + email);
+    },
 }

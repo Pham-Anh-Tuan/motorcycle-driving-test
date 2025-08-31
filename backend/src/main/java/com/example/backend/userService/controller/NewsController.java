@@ -25,6 +25,13 @@ public class NewsController {
         return newsService.getManagerNews(pageable);
     }
 
+    @GetMapping(path = "/public/sum-news")
+    public Map<String, Object> getSumNews(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "12") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return newsService.getSumNews(pageable);
+    }
+
     @GetMapping(path = "/admin/search-news")
     public Map<String, Object> searchManagerBlogs(@RequestParam(defaultValue = "") String keyword,
                                                   @RequestParam(defaultValue = "0") int page,
@@ -37,6 +44,11 @@ public class NewsController {
     @GetMapping(path = "/admin/updated-news/{id}")
     public ResponseEntity<?> getUpdatedNews(@PathVariable("id") String id) {
         return newsService.getUpdatedNewsRes(id);
+    }
+
+    @GetMapping(path = "/public/detail-news/{id}")
+    public ResponseEntity<?> getDetailNews(@PathVariable("id") String id) {
+        return newsService.getDetailNewsRes(id);
     }
 
     @PostMapping(value = "/admin/create-news", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

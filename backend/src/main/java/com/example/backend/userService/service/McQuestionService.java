@@ -1,5 +1,7 @@
 package com.example.backend.userService.service;
 
+import com.example.backend.core.dto.DonutSliceDTO;
+import com.example.backend.core.dto.SeriesItemDTO;
 import com.example.backend.core.mapper.McQuestionMapper;
 import com.example.backend.core.request.ChoiceReq;
 import com.example.backend.core.request.McQuestionReq;
@@ -233,5 +235,18 @@ public class McQuestionService {
     public ResponseEntity<?> getMcQuestionListByType(String type) {
         List<McQuestion> mcQuestionList = mcQuestionRepository.findAllByTypeOrderByQuestionNumberAsc(type);
         return ResponseEntity.ok(McQuestionMapper.toMcQuestionResList(mcQuestionList));
+    }
+
+    public ResponseEntity<?> getQuestionsByNumbers(List<Integer> numbers) {
+        List<McQuestion> mcQuestionList = mcQuestionRepository.findByQuestionNumberIn(numbers);
+        return ResponseEntity.ok(McQuestionMapper.toMcQuestionResList(mcQuestionList));
+    }
+
+    public List<SeriesItemDTO> getQuestionStatsByType() {
+        return mcQuestionRepository.countQuestionsByType();
+    }
+
+    public List<DonutSliceDTO> getCriticalVsNonCriticalStats() {
+        return mcQuestionRepository.countCriticalVsNonCritical();
     }
 }

@@ -222,15 +222,15 @@ const NewsManager = () => {
                                 </tbody>
                             </table>
                         </div>
-
-                        <Pagination
-                            currentPage={page}
-                            totalPages={totalPages}
-                            onPageChange={(page) => {
-                                keyword.trim() ? loadSearchResults(page) : loadSigns(page);
-                            }}
-                        />
-
+                        <div className="p-4">
+                            <Pagination
+                                currentPage={page}
+                                totalPages={totalPages}
+                                onPageChange={(page) => {
+                                    keyword.trim() ? loadSearchResults(page) : loadSigns(page);
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
             </section>
