@@ -12,7 +12,6 @@ interface Sign {
 
 const Sign = () => {
     const [signList, setSignList] = useState<Sign[]>([]);
-    const [open, setOpen] = useState(true);
     const loadSigns = async () => {
         try {
             const { data } = await signApi.getSigns();

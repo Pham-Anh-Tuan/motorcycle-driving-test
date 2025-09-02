@@ -85,7 +85,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
 
         // Encode các giá trị để tránh lỗi URL
         String redirectUrl = String.format(
-                "http://localhost:5173/oauth2-redirect?token=%s&email=%s&imageName=%s&role=%s",
+                "https://onthia1.xyz/oauth2-redirect?token=%s&email=%s&imageName=%s&role=%s",
                 URLEncoder.encode(jwtToken, "UTF-8"),
                 URLEncoder.encode(email, "UTF-8"),
                 URLEncoder.encode(imageName, "UTF-8"),

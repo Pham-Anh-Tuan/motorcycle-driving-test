@@ -6,7 +6,7 @@ import Heading from "@tiptap/extension-heading";
 import { CustomResizableImage } from "./CustomResizableImage";
 import { useRef, useState } from "react";
 import { newsApi } from "../../api/api";
-import { IoCloudUploadOutline, IoDocumentTextOutline } from "react-icons/io5";
+import { IoCloudUploadOutline } from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
 import Toolbar from "./Toolbar";
 

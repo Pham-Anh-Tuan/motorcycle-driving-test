@@ -82,7 +82,7 @@ const Login: React.FC<LoginProps> = ({ setLoginPopup, setForgetPwPopup, setRegis
     };
 
     const handleGoogleLogin = () => {
-        window.location.href = `http://localhost:8080/oauth2/authorization/google`;
+        window.location.href = `https://onthia1.xyz/oauth2/authorization/google`;
     };
 
     return (

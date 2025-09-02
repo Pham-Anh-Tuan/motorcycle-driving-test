@@ -18,7 +18,6 @@ export const Stacked100BarChart: React.FC<Props> = ({
     data,
     height = 36,
     className = "",
-    showLegend = true,
     rounded = true,
 }) => {
     const total = useMemo(() => Math.max(0, data.reduce((s, d) => s + Math.max(0, d.value), 0)), [data]);
@@ -36,9 +35,6 @@ export const Stacked100BarChart: React.FC<Props> = ({
     const [tooltip, setTooltip] = useState<{ x: number; y: number; content: string } | null>(null);
 
     const handleMouseMove = (e: React.MouseEvent, seg: (typeof segments)[0]) => {
-        const rect = (e.target as SVGElement).ownerSVGElement?.getBoundingClientRect();
-        const x = e.clientX - (rect?.left ?? 0);
-        const y = (rect?.top ?? 0) - e.clientY + 12; // prefer top anchored
         setTooltip({
             x: e.clientX + 12,
             y: e.clientY - 12,

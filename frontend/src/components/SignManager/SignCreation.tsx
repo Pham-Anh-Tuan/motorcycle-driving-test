@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { MdOutlineCancel } from "react-icons/md";
-import { mcQuestionApi, signApi } from "../../api/api";
+import { signApi } from "../../api/api";
 
 interface SignCreationProps {
     toggleCreation: () => void;

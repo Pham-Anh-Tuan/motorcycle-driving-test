@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type StyleHTMLAttributes } from "react";
+import { useEffect, useRef, useState } from "react";
 import { examApi, mcQuestionApi } from "../../api/api";
 import Result from "../Result/Result";
 import type { ResultInterface } from "../../interfaces/Result";
@@ -129,11 +129,6 @@ const Exam = () => {
     const handlePause = () => {
         setIsRunning(false);
         if (timerRef.current) clearInterval(timerRef.current);
-    };
-    const handleReset = () => {
-        setIsRunning(false);
-        if (timerRef.current) clearInterval(timerRef.current);
-        setTimeLeft(10); // reset về 10s
     };
 
     // Hàm format mm:ss

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { newsApi } from "../../api/api";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../hooks/Pagination";
-import formatDateDMYHM from "../../hooks/DateTimeFormat";
 import LatestNews from "../LatestNews/LatestNews";
 
 interface SumNews {

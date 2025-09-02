@@ -1,16 +1,7 @@
 import { useEffect, useState } from "react";
 import { examApi } from "../../api/api";
 
-type ExamStatus = "paused" | "failed" | "not-started" | "in-progress";
 
-interface ExamStructure {
-    id: number;
-    title: string;
-    examNumber: number;
-    status: ExamStatus;
-    timeLeft?: string;
-    failReason?: string;
-}
 
 // const examData: ExamStructure[] = [
 //     {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { truncateText } from "../../hooks/TruncateText";
-import { mcQuestionApi, signApi } from "../../api/api";
+import { signApi } from "../../api/api";
 import Pagination from "../../hooks/Pagination";
 import SignCreation from "./SignCreation";
 import SignUpdation from "./SignUpdation";
