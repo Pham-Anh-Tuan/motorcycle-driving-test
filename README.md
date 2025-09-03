@@ -12,8 +12,8 @@ Dự án là một nền tảng ôn luyện lý thuyết thi bằng lái xe máy
 - Luyện tập với bộ câu hỏi phong phú và bám sát quy định.  
 - Giao diện trực quan, thân thiện, tối ưu cho cả máy tính và thiết bị di động.  
 - Kiểm tra nhanh và đánh giá kết quả ngay lập tức.
-
----
+  
+<img width="960" height="448" alt="image" src="https://github.com/user-attachments/assets/7f557734-1ca9-4023-b258-f7e679dac973" />
 
 ## Tính năng nổi bật
 
@@ -31,16 +31,16 @@ Dự án chia làm hai phần chính:
 ### 1. Backend
 
 - Chứa API để lấy câu hỏi, kiểm tra kết quả, lưu lịch sử người dùng.  
-- Có thể tổ chức bằng Java hoặc Node.js tuỳ theo đồn góp trong thư mục `backend`.  
+- Tổ chức bằng Java và Springboot để xây dựng APIs hiệu quả.  
 - Mô hình RESTful API chuẩn.
 
 ### 2. Frontend
 
-- Xây dựng với TypeScript (như thể hiện trên GitHub), kết hợp framework hiện đại như React, Vue hoặc Angular.  
+- Xây dựng với TypeScript (như thể hiện trên GitHub), kết hợp framework hiện đại ReactJs.
 - Giao diện đẹp, dễ sử dụng.
 - Tương tác trực tiếp với backend để hiển thị nội dung, xử lý bài thi, báo cáo kết quả.
-
----
+  
+<img width="960" height="448" alt="image" src="https://github.com/user-attachments/assets/12fc50a1-cace-44e9-92ec-5f28983ec19f" />
 
 ## Cài đặt & khởi chạy
 
